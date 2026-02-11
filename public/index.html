@@ -17,39 +17,43 @@
   <script src="search.js" defer></script>
   <script src="index.js" defer></script>
 
-  <title>akkosploits</title>
+  <title>Google</title>
   <script>
-    // FIXED CLOAKING: This creates a true full-screen experience
+    // PROFESSIONAL URL MASKING
     function openGame() {
-      var win = window.open('about:blank', '_blank');
-      if (!win) return alert("Pop-up blocked! Please allow pop-ups for this site.");
+      const win = window.open('about:blank', '_blank');
+      if (!win) return alert("Pop-up blocked! Please allow pop-ups for cloaking to work.");
       
-      var url = window.location.href;
-      var doc = win.document;
+      const url = window.location.href;
+      const doc = win.document;
       
       doc.open();
       doc.write(`
         <!DOCTYPE html>
         <html style="margin:0;padding:0;height:100%;width:100%;overflow:hidden;">
-        <head><title>Google</title><link rel="icon" href="https://www.google.com"></head>
+        <head>
+          <title>Google</title>
+          <link rel="icon" href="https://www.google.com">
+        </head>
         <body style="margin:0;padding:0;height:100%;width:100%;overflow:hidden;">
           <iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;overflow:hidden;" allowfullscreen="true"></iframe>
         </body></html>
       `);
       doc.close();
+      window.location.replace('https://google.com');
     }
 
-    // Auto About:Blank Logic
     (function() {
       if (localStorage.getItem('autoAboutBlank') === 'true' && window.self === window.top) {
         openGame();
-        window.location.replace('https://google.com');
       }
     })();
+
+    document.title = 'Google';
+    Object.defineProperty(document, 'title', { set: () => {}, get: () => 'Google' });
   </script>
 
   <style>
-    /* Global Font Override */
     * { font-family: 'Oxanium', sans-serif !important; }
 
     body {
@@ -68,31 +72,44 @@
 
     #sj-form { width: min(90%, 600px); position: relative; }
     #sj-address { width: 100%; padding: 16px 24px; font-size: 1.15rem; border: none; border-radius: 999px; background: rgba(255,255,255,0.07); color: white; backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); transition: all 0.22s ease; outline: none; }
-    #sj-address:focus { background: rgba(255,255,255,0.11); transform: translateY(-1px); }
 
-    /* Settings UI */
-    #settings-icon { position: absolute; top: 20px; right: 20px; cursor: pointer; width: 36px; height: 36px; opacity: 0.85; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10000; }
+    /* BIG SETTINGS PANEL */
+    #settings-icon { position: absolute; top: 20px; right: 20px; cursor: pointer; width: 42px; height: 42px; z-index: 10000; transition: 0.4s; }
     #settings-icon.active { transform: rotate(180deg); }
 
-    #settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: 0.4s; }
+    #settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: 0.4s; }
     #settings-overlay.show { opacity: 1; }
-    #settings-panel { background: rgba(18,18,18,0.95); border: 1px solid #3a3a3a; border-radius: 16px; padding: 40px; width: min(90%, 400px); text-align: left; position: relative; }
-    #close-settings { float: right; font-size: 2rem; cursor: pointer; color: #777; transition: color 0.2s; }
-    #close-settings:hover { color: #ff6b6b; }
+
+    #settings-panel { 
+        background: rgba(15,15,15,0.98); 
+        border: 1px solid #333; 
+        border-radius: 24px; 
+        padding: 40px 50px; 
+        width: min(90%, 500px); 
+        text-align: left; 
+    }
+
+    #settings-panel h2 { font-size: 28px; margin-bottom: 25px; font-weight: 400; color: #fff; }
+    #close-settings { float: right; font-size: 35px; cursor: pointer; color: #555; line-height: 0.5; }
+
+    /* REFINED SMALLER TEXT SIZE */
+    .setting-item span, .custom-gradient-btn {
+        font-size: 19px !important; /* Reduced from 24px to 19px */
+        font-weight: 400;
+        letter-spacing: 0.02em;
+    }
 
     .custom-gradient-btn {
       background: linear-gradient(135deg, #444, #000);
-      color: #fff; border: 1px solid #555; font-size: 24px;
-      width: 100%; cursor: pointer; border-radius: 10px; padding: 14px;
-      margin-top: 10px; transition: transform 0.2s, border-color 0.2s;
+      color: #fff; border: 1px solid #555; width: 100%; cursor: pointer; border-radius: 12px; padding: 16px; margin-top: 20px; transition: 0.2s;
     }
-    .custom-gradient-btn:hover { border-color: #999; transform: translateY(-2px); }
+    .custom-gradient-btn:hover { border-color: #00d4ff; transform: translateY(-2px); }
 
-    .setting-item { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
-    .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+    .setting-item { display: flex; justify-content: space-between; align-items: center; margin: 25px 0; }
+    .switch { position: relative; display: inline-block; width: 54px; height: 28px; }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; inset: 0; background-color: #333; transition: .4s; border-radius: 24px; }
-    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+    .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
     input:checked + .slider { background-color: #00d4ff; }
     input:checked + .slider:before { transform: translateX(26px); }
   </style>
@@ -100,14 +117,14 @@
 
 <body>
 
-  <div id="settings-icon">
-    <svg viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.07-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.07.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+  <div id="settings-icon" onclick="toggleSettings()">
+    <svg viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.07-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.07.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z""")/>></svg>
   </div>
 
   <div id="settings-overlay">
     <div id="settings-panel">
-      <span id="close-settings">×</span>
-      <h2 style="margin-top:0; font-weight: 400;">Settings</h2>
+      <span id="close-settings" onclick="toggleSettings()">×</span>
+      <h2>Settings</h2>
       <div class="setting-item">
         <span>Auto About:Blank</span>
         <label class="switch">
@@ -115,16 +132,15 @@
           <span class="slider"></span>
         </label>
       </div>
-      <button onclick="openGame()" class="custom-gradient-btn">Open About:Blank</button>
+      <button onclick="openGame()" class="custom-gradient-btn">Open About:Blank Tab</button>
     </div>
   </div>
 
   <h1>akkosploits</h1>
   <div class="by">By Akko</div>
 
-  <!-- FIXED FORM: Removed hidden iframe targets to ensure full-page loading -->
   <form id="sj-form">
-    <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+    <input id="sj-search-engine" value="https://www.google.com" type="hidden" />
     <input id="sj-address" type="text" placeholder="Search the web freely" autofocus required />
   </form>
 
@@ -134,9 +150,7 @@
     const autoBlankToggle = document.getElementById('auto-blank-toggle');
 
     autoBlankToggle.checked = localStorage.getItem('autoAboutBlank') === 'true';
-    autoBlankToggle.addEventListener('change', (e) => {
-      localStorage.setItem('autoAboutBlank', e.target.checked);
-    });
+    autoBlankToggle.addEventListener('change', (e) => localStorage.setItem('autoAboutBlank', e.target.checked));
 
     function toggleSettings() {
       if (settingsOverlay.style.display === 'flex') {
@@ -150,26 +164,17 @@
       }
     }
 
-    settingsIcon.onclick = toggleSettings;
-    settingsOverlay.onclick = (e) => { if (e.target === settingsOverlay) toggleSettings(); };
-    document.getElementById('close-settings').onclick = toggleSettings;
-
-    // INTERCEPT SEARCH: This forces the result to REPLACE the current page
+    // FIX: FULL SCREEN SEARCH INTERCEPTOR
     document.getElementById('sj-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const address = document.getElementById('sj-address').value;
+      const address = document.getElementById('sj-address').value.trim();
       const engine = document.getElementById('sj-search-engine').value;
-      
-      // search.js usually defines a function to process the URL
-      // We use window.location.href to ensure the whole page changes
-      let url = address.trim();
+      let url = address;
       if (!url.includes('.') || url.includes(' ')) {
         url = engine.replace('%s', encodeURIComponent(url));
       } else if (!url.startsWith('http')) {
         url = 'https://' + url;
       }
-
-      // __sj is the Scramjet global prefix
       window.location.href = __sj.prefix + encodeURIComponent(url);
     });
   </script>
