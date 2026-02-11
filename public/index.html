@@ -7,7 +7,7 @@
   <!-- Oxanium Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
   <!-- Scramjet & Bare-Mux Scripts -->
   <script src="/scram/scramjet.all.js"></script>
@@ -19,27 +19,19 @@
 
   <title>Google</title>
   <script>
-    // PROFESSIONAL URL MASKING
+    // PROFESSIONAL URL MASKING - FIXED TO FULL TAB
     function openGame() {
-      const win = window.open('about:blank', '_blank');
-      if (!win) return alert("Pop-up blocked! Please allow pop-ups for cloaking to work.");
-      
       const url = window.location.href;
-      const doc = win.document;
-      
-      doc.open();
-      doc.write(`
-        <!DOCTYPE html>
-        <html style="margin:0;padding:0;height:100%;width:100%;overflow:hidden;">
-        <head>
-          <title>Google</title>
-          <link rel="icon" href="https://www.google.com">
-        </head>
-        <body style="margin:0;padding:0;height:100%;width:100%;overflow:hidden;">
-          <iframe src="${url}" style="width:100vw;height:100vh;border:none;margin:0;padding:0;overflow:hidden;" allowfullscreen="true"></iframe>
-        </body></html>
-      `);
-      doc.close();
+
+      // Open in NEW FULL TAB (no iframe/mini screen)
+      const win = window.open('about:blank', '_blank');
+      if (!win) return alert("Pop-up blocked! Allow pop-ups for cloaking.");
+
+      win.location.href = url; // Load directly in the blank tab
+      // OR for same-tab full takeover (uncomment if you prefer):
+      // window.location.href = url;
+
+      // Optional: Change original tab to Google (innocent cover)
       window.location.replace('https://google.com');
     }
 
@@ -118,7 +110,7 @@
 <body>
 
   <div id="settings-icon" onclick="toggleSettings()">
-    <svg viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.07-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.07.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z""")/>></svg>
+    <svg viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.07-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.07.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
   </div>
 
   <div id="settings-overlay">
@@ -164,18 +156,29 @@
       }
     }
 
-    // FIX: FULL SCREEN SEARCH INTERCEPTOR
-    document.getElementById('sj-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    // FIXED: FULL TAB LOAD (no iframe/mini screen)
+    function openGame() {
       const address = document.getElementById('sj-address').value.trim();
-      const engine = document.getElementById('sj-search-engine').value;
       let url = address;
       if (!url.includes('.') || url.includes(' ')) {
-        url = engine.replace('%s', encodeURIComponent(url));
+        url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
       } else if (!url.startsWith('http')) {
         url = 'https://' + url;
       }
-      window.location.href = __sj.prefix + encodeURIComponent(url);
+
+      // Open in NEW FULL TAB (no iframe)
+      window.open(__sj.prefix + encodeURIComponent(url), '_blank');
+      // OR same tab full takeover (uncomment if you want):
+      // window.location.href = __sj.prefix + encodeURIComponent(url);
+
+      // Optional: Change original tab to Google (cover)
+      // window.location.replace('https://google.com');
+    }
+
+    // Attach to form submit (so typing + enter works full-page too)
+    document.getElementById('sj-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      openGame();
     });
   </script>
 </body>
