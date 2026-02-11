@@ -1,66 +1,162 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-		/>
-		<title>Scramjet</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 
-		<link rel="shortcut icon" content="favicon.webp" />
-	
-		<script src="/scram/scramjet.all.js"></script>
-		<script src="/baremux/index.js"></script>
-		
-		<link rel="stylesheet" href="index.css" />
-		<script src="register-sw.js" defer></script>
-		<script src="search.js" defer></script>
-		<script src="index.js" defer></script>
-	</head>
+  <!-- Oxanium Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com" rel="stylesheet">
 
-	<body>
-		<div title="Scramjet Logo" class="flex-center logo-wrapper header-center">
-			<img class="logo" src="sj.png" alt="Scramjet" />
-			<h1>Scramjet | MW</h1>
-		</div>
-		<div class="flex-center desc left-margin">
-			<p>
-				Scramjet is an experimental interception based web proxy designed to
-				evade internet censorship, bypass arbitrary web browser restrictions and
-				innovate web proxy technologies.
-			</p>
-		</div>
+  <!-- Scramjet & Bare-Mux Scripts -->
+  <script src="/scram/scramjet.all.js"></script>
+  <script src="/baremux/index.js"></script>
+  
+  <script src="register-sw.js" defer></script>
+  <script src="search.js" defer></script>
+  <script src="index.js" defer></script>
 
-		<form id="sj-form" class="flex-center">
-			<input
-				id="sj-search-engine"
-				value="https://www.google.com/search?q=%s"
-				type="hidden"
-			/>
-			<input id="sj-address" type="text" placeholder="Search the web freely" />
-		</form>
-		<div class="desc left-margin">
-			<p id="sj-error"></p>
-			<pre id="sj-error-code"></pre>
-		</div>
-		<footer>
-			<div>
-				<a
-					title="The Mercury Workshop GitHub organization"
-					href="https://github.com/MercuryWorkshop"
-					>Mercury Workshop</a
-				>
-				<a
-					title="The example demo app for Scramjet"
-					href="https://github.com/MercuryWorkshop/Scramjet-Demo"
-					>GitHub</a
-				>
-				<a title="License information" href="credits.html">Credits</a>
-			</div>
-			<div>
-				<span>Scramjet &copy; MW 2025</span>
-			</div>
-		</footer>
-	</body>
+  <title></title>
+  <script>
+    // THE SCRIPT YOU REQUESTED: Improved to prevent white screens
+    function openGame() {
+      var win = window.open('about:blank', '_blank');
+      if (!win) return alert("Pop-up blocked! Please allow pop-ups for this site.");
+      
+      var url = window.location.href;
+      var doc = win.document;
+      
+      doc.open();
+      doc.write(`
+        <!DOCTYPE html>
+        <html style="margin:0;padding:0;height:100%;overflow:hidden;">
+        <head><title>Google</title><link rel="icon" href="https://www.google.com"></head>
+        <body style="margin:0;padding:0;height:100%;overflow:hidden;">
+          <iframe src="${url}" style="width:100%;height:100%;border:none;margin:0;padding:0;overflow:hidden;" allowfullscreen="true"></iframe>
+        </body></html>
+      `);
+      doc.close();
+    }
+
+    // Auto About:Blank Logic
+    (function() {
+      if (localStorage.getItem('autoAboutBlank') === 'true' && window.self === window.top) {
+        openGame();
+        window.location.replace('https://google.com');
+      }
+    })();
+
+    // Permanent Blank Tab Title
+    document.title = '';
+    Object.defineProperty(document, 'title', { set: () => {}, get: () => '' });
+  </script>
+
+  <style>
+    /* Global Font Override */
+    * { font-family: 'Oxanium', sans-serif !important; }
+
+    body {
+      margin: 0; min-height: 100vh;
+      background: linear-gradient(90deg, #000, #1a1a1a, #000);
+      background-size: 300% 300%;
+      animation: gradientMove 18s ease infinite;
+      color: #fff; font-weight: 300; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    @keyframes gradientMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    
+    h1 { font-size: clamp(4.5rem, 12vw, 9rem); font-weight: 300; letter-spacing: -0.03em; margin-bottom: 0.1em; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+    .by { font-size: clamp(1.6rem, 5vw, 2.8rem); font-weight: 300; color: #bbbbbb; margin-bottom: 4rem; opacity: 0.92; }
+
+    #sj-form { width: min(90%, 600px); position: relative; }
+    #sj-address { width: 100%; padding: 16px 24px; font-size: 1.15rem; border: none; border-radius: 999px; background: rgba(255,255,255,0.07); color: white; backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); transition: all 0.22s ease; outline: none; }
+    #sj-address:focus { background: rgba(255,255,255,0.11); transform: translateY(-1px); }
+
+    /* Settings UI & Gear Spin */
+    #settings-icon { position: absolute; top: 20px; right: 20px; cursor: pointer; width: 36px; height: 36px; opacity: 0.85; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10000; }
+    #settings-icon.active { transform: rotate(180deg); }
+
+    #settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: 0.4s; }
+    #settings-overlay.show { opacity: 1; }
+    #settings-panel { background: rgba(18,18,18,0.95); border: 1px solid #3a3a3a; border-radius: 16px; padding: 40px; width: min(90%, 400px); text-align: left; position: relative; }
+    #close-settings { float: right; font-size: 2rem; cursor: pointer; color: #777; transition: color 0.2s; }
+    #close-settings:hover { color: #ff6b6b; }
+
+    /* Gray to Black Gradient Button */
+    .custom-gradient-btn {
+      background: linear-gradient(135deg, #444, #000);
+      color: #fff; border: 1px solid #555; font-size: 24px;
+      width: 100%; cursor: pointer; border-radius: 10px; padding: 14px;
+      margin-top: 10px; transition: transform 0.2s, border-color 0.2s;
+    }
+    .custom-gradient-btn:hover { border-color: #999; transform: translateY(-2px); }
+
+    .setting-item { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+    .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background-color: #333; transition: .4s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: #00d4ff; }
+    input:checked + .slider:before { transform: translateX(26px); }
+  </style>
+</head>
+
+<body>
+
+  <div id="settings-icon">
+    <svg viewBox="0 0 24 24" fill="#fff"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.07-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.07.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z""")/>></svg>
+  </div>
+
+  <div id="settings-overlay">
+    <div id="settings-panel">
+      <span id="close-settings">×</span>
+      <h2 style="margin-top:0; font-weight: 400;">Settings</h2>
+      <div class="setting-item">
+        <span>Auto About:Blank</span>
+        <label class="switch">
+          <input type="checkbox" id="auto-blank-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <button onclick="window.close(); openGame()" class="custom-gradient-btn">Open About:Blank</button>
+    </div>
+  </div>
+
+  <h1>akkosploits</h1>
+  <div class="by">By Akko</div>
+
+  <form id="sj-form">
+    <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+    <input id="sj-address" type="text" placeholder="Search the web freely" autofocus />
+  </form>
+
+  <script>
+    const settingsIcon = document.getElementById('settings-icon');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const autoBlankToggle = document.getElementById('auto-blank-toggle');
+
+    autoBlankToggle.checked = localStorage.getItem('autoAboutBlank') === 'true';
+    autoBlankToggle.addEventListener('change', (e) => {
+      localStorage.setItem('autoAboutBlank', e.target.checked);
+    });
+
+    function toggleSettings() {
+      if (settingsOverlay.style.display === 'flex') {
+        settingsOverlay.classList.remove('show');
+        settingsIcon.classList.remove('active');
+        setTimeout(() => settingsOverlay.style.display = 'none', 400);
+      } else {
+        settingsOverlay.style.display = 'flex';
+        settingsIcon.classList.add('active');
+        setTimeout(() => settingsOverlay.classList.add('show'), 10);
+      }
+    }
+
+    settingsIcon.onclick = toggleSettings;
+    settingsOverlay.onclick = (e) => { if (e.target === settingsOverlay) toggleSettings(); };
+    document.getElementById('close-settings').onclick = toggleSettings;
+  </script>
+</body>
 </html>
