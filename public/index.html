@@ -1,10 +1,10 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 
-  <!-- Oxanium Font -->
+  <!-- Oxanium Font (fixed incomplete link) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;700;800&display=swap" rel="stylesheet">
@@ -17,23 +17,26 @@
   <script src="search.js" defer></script>
   <script src="index.js" defer></script>
 
-  <title>Google</title>
+  <title></title>
   <script>
-    // PROFESSIONAL URL MASKING - FIXED TO FULL TAB
-    function openGame() {
-      const url = window.location.href;
+    // PROFESSIONAL URL MASKING - FIXED NO MINI SCREEN
+    function ab_cloakReal() {
+  if (typeof document !== "undefined") {
+    var iframe = document.createElement("iframe");
+    iframe.src = window.location.href;
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "none";
+    iframe.style.overflow = "hidden";
 
-      // Open in NEW FULL TAB (no iframe/mini screen)
-      const win = window.open('about:blank', '_blank');
-      if (!win) return alert("Pop-up blocked! Allow pop-ups for cloaking.");
-
-      win.location.href = url; // Load directly in the blank tab
-      // OR for same-tab full takeover (uncomment if you prefer):
-      // window.location.href = url;
-
-      // Optional: Change original tab to Google (innocent cover)
-      window.location.replace('https://google.com');
-    }
+    var newWindow = window.open("about:blank", "_blank");
+    newWindow.document.body.appendChild(iframe);
+    newWindow.document.body.style.width = "100%";
+    newWindow.document.body.style.height = "100%";
+    newWindow.document.body.style.margin = "0";
+    newWindow.document.body.style.padding = "0";
+  }
+}
 
     (function() {
       if (localStorage.getItem('autoAboutBlank') === 'true' && window.self === window.top) {
@@ -41,8 +44,8 @@
       }
     })();
 
-    document.title = 'Google';
-    Object.defineProperty(document, 'title', { set: () => {}, get: () => 'Google' });
+    document.title = '';
+    Object.defineProperty(document, 'title', { set: () => {}, get: () => '' });
   </script>
 
   <style>
@@ -156,29 +159,18 @@
       }
     }
 
-    // FIXED: FULL TAB LOAD (no iframe/mini screen)
-    function openGame() {
+    // FIXED: FULL SCREEN SEARCH INTERCEPTOR
+    document.getElementById('sj-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
       const address = document.getElementById('sj-address').value.trim();
+      const engine = document.getElementById('sj-search-engine').value;
       let url = address;
       if (!url.includes('.') || url.includes(' ')) {
-        url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+        url = engine.replace('%s', encodeURIComponent(url));
       } else if (!url.startsWith('http')) {
         url = 'https://' + url;
       }
-
-      // Open in NEW FULL TAB (no iframe)
-      window.open(__sj.prefix + encodeURIComponent(url), '_blank');
-      // OR same tab full takeover (uncomment if you want):
-      // window.location.href = __sj.prefix + encodeURIComponent(url);
-
-      // Optional: Change original tab to Google (cover)
-      // window.location.replace('https://google.com');
-    }
-
-    // Attach to form submit (so typing + enter works full-page too)
-    document.getElementById('sj-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      openGame();
+      window.location.href = __sj.prefix + encodeURIComponent(url);
     });
   </script>
 </body>
