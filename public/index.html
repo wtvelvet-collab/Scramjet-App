@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
+  <!-- Scramjet required scripts -->
   <script src="/scram/scramjet.all.js"></script>
   <script src="/baremux/index.js"></script>
-
   <script src="register-sw.js" defer></script>
   <script src="search.js" defer></script>
   <script src="index.js" defer></script>
@@ -60,7 +60,7 @@
       font-size: clamp(1.6rem, 5vw, 2.8rem);
       font-weight: 300;
       color: #bbbbbb;
-      margin-bottom: 4rem;
+      margin-bottom: 3rem;
       opacity: 0.92;
     }
 
@@ -93,7 +93,23 @@
       transform: translateY(-1px);
     }
 
-    /* ── Settings Icon ── */
+    /* Error display (kept minimal) */
+    .error-area {
+      margin-top: 1.5rem;
+      color: #ff6b6b;
+      font-size: 0.95rem;
+    }
+
+    #sj-error-code {
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 600px;
+      overflow-x: auto;
+      margin-top: 0.5rem;
+    }
+
+    /* Settings Icon */
     #settings-icon {
       position: absolute;
       top: 20px;
@@ -114,7 +130,7 @@
       transform: rotate(180deg);
     }
 
-    /* ── Settings Overlay ── */
+    /* Settings Overlay */
     #settings-overlay {
       position: fixed;
       inset: 0;
@@ -212,14 +228,6 @@
       opacity: 1;
     }
 
-    .setting-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 25px 0;
-      font-size: 1.1rem;
-    }
-
     .custom-gradient-btn {
       background: linear-gradient(135deg, #444, #000);
       color: #fff;
@@ -238,52 +246,17 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(0,212,255,0.2);
     }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 54px;
-      height: 28px;
-    }
-
-    .switch input { opacity: 0; width: 0; height: 0; }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      inset: 0;
-      background-color: #333;
-      transition: .4s;
-      border-radius: 34px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 22px;
-      width: 22px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider { background-color: #00d4ff; }
-    input:checked + .slider:before { transform: translateX(26px); }
   </style>
 </head>
 
 <body>
 
-  <!-- Settings gear -->
   <div id="settings-icon" onclick="toggleSettings()">
     <svg viewBox="0 0 24 24" fill="#fff">
       <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.07-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.07.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
     </svg>
   </div>
 
-  <!-- Settings panel -->
   <div id="settings-overlay">
     <div id="settings-panel">
       <span id="close-settings" onclick="toggleSettings()">×</span>
@@ -311,13 +284,7 @@
         <div class="content-area" id="content-area">
           <div id="cloaking-content">
             <h3 class="section-title">cloaking</h3>
-            <div class="setting-item">
-              <span>Auto About:Blank</span>
-              <label class="switch">
-                <input type="checkbox" id="auto-blank-toggle">
-                <span class="slider"></span>
-              </label>
-            </div>
+
             <button onclick="ab_cloakReal()" class="custom-gradient-btn">
               Open About:Blank
             </button>
@@ -335,19 +302,32 @@
   <h1>akkosploits</h1>
   <div class="by">By Akko</div>
 
+  <!-- Proxy form (functional part from Scramjet) -->
   <form id="sj-form">
-    <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
-    <input id="sj-address" type="text" placeholder="Search the web freely" autofocus required />
+    <input
+      id="sj-search-engine"
+      value="https://www.google.com/search?q=%s"
+      type="hidden"
+    />
+    <input
+      id="sj-address"
+      type="text"
+      placeholder="Search the web freely"
+      autofocus
+      required
+    />
   </form>
 
+  <!-- Error display area (kept for proxy feedback) -->
+  <div class="error-area">
+    <p id="sj-error"></p>
+    <pre id="sj-error-code"></pre>
+  </div>
+
   <script>
-    // ── Your settings & cloaking logic ──
     const settingsIcon = document.getElementById('settings-icon');
     const settingsOverlay = document.getElementById('settings-overlay');
-    const autoBlankToggle = document.getElementById('auto-blank-toggle');
-
-    autoBlankToggle.checked = localStorage.getItem('autoAboutBlank') === 'true';
-    autoBlankToggle.addEventListener('change', (e) => localStorage.setItem('autoAboutBlank', e.target.checked));
+    const contentArea = document.getElementById('content-area');
 
     function toggleSettings() {
       if (settingsOverlay.style.display === 'flex') {
@@ -362,7 +342,6 @@
     }
 
     function showTab(tab) {
-      const contentArea = document.getElementById('content-area');
       contentArea.classList.add('fade');
 
       setTimeout(() => {
@@ -379,26 +358,27 @@
     showTab('cloaking');
 
     function ab_cloakReal() {
-      const currentUrl = window.location.href;
-      const iframe = document.createElement("iframe");
-      iframe.src = currentUrl;
-      iframe.style.width = "100%";
-      iframe.style.height = "100%";
-      iframe.style.border = "none";
-      iframe.style.overflow = "hidden";
+      if (typeof document !== "undefined") {
+        var iframe = document.createElement("iframe");
+        iframe.src = window.location.href;
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "none";
+        iframe.style.overflow = "hidden";
 
-      const newWindow = window.open("about:blank", "_blank");
-      if (!newWindow) {
-        alert("Pop-up blocked! Allow pop-ups in your browser settings.");
-        return;
+        var newWindow = window.open("about:blank", "_blank");
+        if (!newWindow) {
+          alert("Pop-up blocked! Allow pop-ups in your browser settings.");
+          return;
+        }
+
+        newWindow.document.body.appendChild(iframe);
+        newWindow.document.body.style.width = "100%";
+        newWindow.document.body.style.height = "100%";
+        newWindow.document.body.style.margin = "0";
+        newWindow.document.body.style.padding = "0";
+        newWindow.document.body.style.overflow = "hidden";
       }
-
-      newWindow.document.body.appendChild(iframe);
-      newWindow.document.body.style.margin = "0";
-      newWindow.document.body.style.padding = "0";
-      newWindow.document.body.style.width = "100%";
-      newWindow.document.body.style.height = "100%";
-      newWindow.document.body.style.overflow = "hidden";
     }
   </script>
 </body>
