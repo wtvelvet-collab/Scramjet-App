@@ -38,7 +38,7 @@
     h1 { font-size: clamp(4.5rem, 12vw, 9rem); font-weight: 300; letter-spacing: -0.03em; margin-bottom: 0.1em; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
     .by { font-size: clamp(1.6rem, 5vw, 2.8rem); font-weight: 300; color: #bbbbbb; margin-bottom: 4rem; opacity: 0.92; }
 
-    #sj-form { width: min(90%, 600px); position: relative; z-index: 5; }
+    #sj-form { width: min(90%, 600px); position: relative; }
     #sj-address {
       width: 100%; padding: 16px 24px; font-size: 1.15rem; border: none; border-radius: 999px;
       background: rgba(255,255,255,0.07); color: white; backdrop-filter: blur(10px);
@@ -65,7 +65,7 @@
     #settings-panel {
       background: #0f0f0f;
       border-radius: 16px;
-      width: 95%; 
+      width: 95%; /* Slightly wider to maximize screen usage */
       max-width: 650px;
       height: 75vh;
       max-height: 800px;
@@ -75,7 +75,7 @@
       position: relative;
     }
 
-    /* Smaller Sidebar */
+    /* Sidebar - WIDTH REDUCED from 220px to 160px */
     .sidebar {
       width: 160px;
       background: #111;
@@ -151,6 +151,7 @@
     }
     #close-settings:hover { opacity: 1; }
 
+    /* Original button & text style */
     .setting-item span, .custom-gradient-btn {
       font-size: 19px !important;
       font-weight: 400;
@@ -225,12 +226,14 @@
       <div style="display:flex;height:100%;width:100%;">
         <div class="sidebar">
           <div style="font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:25px;padding-left:12px;">settings</div>
+
           <div id="cloaking-tab" onclick="showTab('cloaking')" class="sidebar-item active">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
             </svg>
             cloaking
           </div>
+
           <div id="about-tab" onclick="showTab('about')" class="sidebar-item">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;">
               <circle cx="12" cy="12" r="10"/>
@@ -244,6 +247,7 @@
         <div class="content-area" id="content-area">
           <div id="cloaking-content">
             <h3 class="section-title">cloaking</h3>
+
             <div class="setting-item">
               <span>Auto About:Blank</span>
               <label class="switch">
@@ -251,8 +255,12 @@
                 <span class="slider"></span>
               </label>
             </div>
-            <button onclick="ab_cloakReal()" class="custom-gradient-btn">Open About:Blank</button>
+
+            <button onclick="ab_cloakReal()" class="custom-gradient-btn">
+              Open About:Blank
+            </button>
           </div>
+
           <div id="about-content" style="display:none;">
             <h3 class="section-title">about</h3>
             <p style="color:#777;text-align:center;margin-top:40px;">(about page - blank for now)</p>
@@ -293,11 +301,14 @@
 
     function showTab(tab) {
       contentArea.classList.add('fade');
+
       setTimeout(() => {
         document.getElementById('cloaking-content').style.display = tab === 'cloaking' ? 'block' : 'none';
         document.getElementById('about-content').style.display = tab === 'about' ? 'block' : 'none';
+
         document.getElementById('cloaking-tab').classList.toggle('active', tab === 'cloaking');
         document.getElementById('about-tab').classList.toggle('active', tab === 'about');
+
         contentArea.classList.remove('fade');
       }, 250);
     }
@@ -308,15 +319,22 @@
       if (typeof document !== "undefined") {
         var iframe = document.createElement("iframe");
         iframe.src = window.location.href;
-        iframe.style.cssText = "width:100%; height:100%; border:none; overflow:hidden;";
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "none";
+        iframe.style.overflow = "hidden";
+
         var newWindow = window.open("about:blank", "_blank");
-        if (!newWindow) return alert("Pop-up blocked!");
+        if (!newWindow) return alert("Pop-up blocked! Allow pop-ups in Safari settings.");
+
         newWindow.document.body.appendChild(iframe);
-        newWindow.document.body.style.cssText = "width:100%; height:100%; margin:0; padding:0;";
+        newWindow.document.body.style.width = "100%";
+        newWindow.document.body.style.height = "100%";
+        newWindow.document.body.style.margin = "0";
+        newWindow.document.body.style.padding = "0";
       }
     }
 
-    /* FIX: Search Result Issue */
     document.getElementById('sj-form').addEventListener('submit', (e) => {
       e.preventDefault();
       let address = document.getElementById('sj-address').value.trim();
@@ -329,14 +347,7 @@
         url = address.startsWith('http') ? address : 'https://' + address;
       }
 
-      // Ensure the proxy loads the URL by redirecting the top-level location
-      // This prevents the "mini screen" look shown in your screenshot
-      if (window.__sj && __sj.prefix) {
-        window.location.href = __sj.prefix + encodeURIComponent(url);
-      } else {
-        // Fallback if proxy scripts aren't loaded yet
-        window.location.href = "/scram/" + encodeURIComponent(url);
-      }
+      window.location.href = __sj.prefix + encodeURIComponent(url);
     });
   </script>
 </body>
