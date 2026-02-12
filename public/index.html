@@ -110,7 +110,7 @@
           <span class="slider"></span>
         </label>
       </div>
-      <button onclick="ab_cloakReal()" class="custom-gradient-btn">Cloak</button>
+      <button onclick="ab_cloakReal()" class="action-btn">Cloak</button>
     </div>
   </div>
 
@@ -118,7 +118,7 @@
   <div class="by">By Akko</div>
 
   <form id="sj-form">
-    <input id="sj-search-engine" value="https://www.google.com" type="hidden" />
+    <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
     <input id="sj-address" type="text" placeholder="Search the web freely" autofocus required />
   </form>
 
@@ -133,16 +133,15 @@
     function toggleSettings() {
       if (settingsOverlay.style.display === 'flex') {
         settingsOverlay.classList.remove('show');
-        settingsIcon.classList.remove('active');
+        settingsIcon.classList.remove('spin');
         setTimeout(() => settingsOverlay.style.display = 'none', 400);
       } else {
         settingsOverlay.style.display = 'flex';
-        settingsIcon.classList.add('active');
+        settingsIcon.classList.add('spin');
         setTimeout(() => settingsOverlay.classList.add('show'), 10);
       }
     }
 
-    // Your cloak function
     function ab_cloakReal() {
       if (typeof document !== "undefined") {
         var iframe = document.createElement("iframe");
@@ -163,21 +162,23 @@
       }
     }
 
-    // FIXED SEARCH: Full-screen takeover (no iframe/mini screen)
+    // FIXED SEARCH: Full-screen takeover
     document.getElementById('sj-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const address = document.getElementById('sj-address').value.trim();
-      const engine = document.getElementById('sj-search-engine').value;
-      let url = address;
+      let address = document.getElementById('sj-address').value.trim();
+      if (!address) return;
 
-      if (!url.includes('.') || url.includes(' ')) {
-        url = engine.replace('%s', encodeURIComponent(url));
-      } else if (!url.startsWith('http')) {
-        url = 'https://' + url;
+      let url;
+      if (address.includes(' ') || !address.includes('.')) {
+        // Search query → force proper Google URL
+        url = 'https://www.google.com/search?q=' + encodeURIComponent(address);
+      } else {
+        url = address.startsWith('http') ? address : 'https://' + address;
       }
 
-      // Load proxy full-screen in current tab (replaces homepage)
-      window.location.href = __sj.prefix + encodeURIComponent(url);
+      // Proxy it full-screen (replace current page)
+      const proxied = __sj.prefix + encodeURIComponent(url);
+      window.location.href = proxied;
     });
   </script>
 </body>
