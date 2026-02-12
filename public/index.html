@@ -1,66 +1,377 @@
 <!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
-		/>
-		<title>Scramjet</title>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 
-		<link rel="shortcut icon" content="favicon.webp" />
-	
-		<script src="/scram/scramjet.all.js"></script>
-		<script src="/baremux/index.js"></script>
-		
-		<link rel="stylesheet" href="index.css" />
-		<script src="register-sw.js" defer></script>
-		<script src="search.js" defer></script>
-		<script src="index.js" defer></script>
-	</head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
-	<body>
-		<div title="Scramjet Logo" class="flex-center logo-wrapper header-center">
-			<img class="logo" src="sj.png" alt="Scramjet" />
-			<h1>Scramjet | MW</h1>
-		</div>
-		<div class="flex-center desc left-margin">
-			<p>
-				Scramjet is an experimental interception based web proxy designed to
-				evade internet censorship, bypass arbitrary web browser restrictions and
-				innovate web proxy technologies.
-			</p>
-		</div>
+  <script src="/scram/scramjet.all.js"></script>
+  <script src="/baremux/index.js"></script>
 
-		<form id="sj-form" class="flex-center">
-			<input
-				id="sj-search-engine"
-				value="https://www.google.com/search?q=%s"
-				type="hidden"
-			/>
-			<input id="sj-address" type="text" placeholder="Search the web freely" />
-		</form>
-		<div class="desc left-margin">
-			<p id="sj-error"></p>
-			<pre id="sj-error-code"></pre>
-		</div>
-		<footer>
-			<div>
-				<a
-					title="The Mercury Workshop GitHub organization"
-					href="https://github.com/MercuryWorkshop"
-					>Mercury Workshop</a
-				>
-				<a
-					title="The example demo app for Scramjet"
-					href="https://github.com/MercuryWorkshop/Scramjet-Demo"
-					>GitHub</a
-				>
-				<a title="License information" href="credits.html">Credits</a>
-			</div>
-			<div>
-				<span>Scramjet &copy; MW 2025</span>
-			</div>
-		</footer>
-	</body>
+  <script src="register-sw.js" defer></script>
+  <script src="search.js" defer></script>
+  <script src="index.js" defer></script>
+
+  <title>akkosploits</title>
+
+  <style>
+    * { font-family: 'Oxanium', sans-serif !important; }
+
+    body {
+      margin: 0; min-height: 100vh;
+      background: linear-gradient(90deg, #000, #1a1a1a, #000);
+      background-size: 300% 300%;
+      animation: gradientMove 18s ease infinite;
+      color: #fff; font-weight: 300; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    @keyframes gradientMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    
+    h1 { font-size: clamp(4.5rem, 12vw, 9rem); font-weight: 300; letter-spacing: -0.03em; margin-bottom: 0.1em; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
+    .by { font-size: clamp(1.6rem, 5vw, 2.8rem); font-weight: 300; color: #bbbbbb; margin-bottom: 4rem; opacity: 0.92; }
+
+    #sj-form { width: min(90%, 600px); position: relative; }
+    #sj-address {
+      width: 100%; padding: 16px 24px; font-size: 1.15rem; border: none; border-radius: 999px;
+      background: rgba(255,255,255,0.07); color: white; backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5); transition: all 0.22s; outline: none;
+    }
+    #sj-address::placeholder { color: rgba(255,255,255,0.45); }
+    #sj-address:focus { background: rgba(255,255,255,0.11); box-shadow: 0 14px 50px rgba(0,0,0,0.6); transform: translateY(-1px); }
+
+    /* Settings Icon */
+    #settings-icon {
+      position: absolute; top: 20px; right: 20px; cursor: pointer; width: 42px; height: 42px; z-index: 10000;
+      transition: transform 0.4s, opacity 0.3s;
+    }
+    #settings-icon:hover { opacity: 1; transform: scale(1.15); }
+    #settings-icon.active { transform: rotate(180deg); }
+
+    /* Settings Overlay */
+    #settings-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(15px);
+      display: none; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: opacity 0.25s;
+    }
+    #settings-overlay.show { opacity: 1; }
+
+    #settings-panel {
+      background: #0f0f0f;
+      border-radius: 16px;
+      width: 95%;
+      max-width: 650px;
+      height: 75vh;
+      max-height: 800px;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    .sidebar {
+      width: 160px;
+      background: #111;
+      padding: 20px 10px;
+      border-right: 1px solid #222;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      color: #fff;
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      padding-left: 10px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      color: #888;
+      cursor: pointer;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      transition: background 0.25s ease;
+      position: relative;
+      font-size: 0.95rem;
+    }
+
+    .sidebar-item:hover {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .sidebar-item.active {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .sidebar-item span.icon {
+      margin-right: 10px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .content-area {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      color: #ddd;
+      transition: opacity 0.25s ease;
+    }
+
+    .content-area.fade {
+      opacity: 0;
+    }
+
+    .section-title {
+      margin: 0 0 20px;
+      font-size: 1.6rem;
+      color: #fff;
+    }
+
+    #close-settings {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #fff;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    #close-settings:hover { opacity: 1; }
+
+    .setting-item span, .custom-gradient-btn {
+      font-size: 19px !important;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .custom-gradient-btn {
+      background: linear-gradient(135deg, #444, #000);
+      color: #fff;
+      border: 1px solid #555;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+      transition: 0.2s;
+    }
+    .custom-gradient-btn:hover {
+      border-color: #00d4ff;
+      transform: translateY(-2px);
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 25px 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 54px;
+      height: 28px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #00d4ff; }
+    input:checked + .slider:before { transform: translateX(26px); }
+  </style>
+</head>
+
+<body>
+
+  <div id="settings-icon" onclick="toggleSettings()">
+    <svg viewBox="0 0 24 24" fill="#fff">
+      <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.07-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.3-.06.62-.06.94s.02.64.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.07.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </svg>
+  </div>
+
+  <div id="settings-overlay">
+    <div id="settings-panel">
+      <span id="close-settings" onclick="toggleSettings()">×</span>
+      <div style="display:flex;height:100%;width:100%;">
+        <div class="sidebar">
+          <div style="font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:25px;padding-left:12px;">settings</div>
+
+          <div id="cloaking-tab" onclick="showTab('cloaking')" class="sidebar-item active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            cloaking
+          </div>
+
+          <div id="about-tab" onclick="showTab('about')" class="sidebar-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            about
+          </div>
+        </div>
+
+        <div class="content-area" id="content-area">
+          <div id="cloaking-content">
+            <h3 class="section-title">cloaking</h3>
+
+            <div class="setting-item">
+              <span>Auto About:Blank</span>
+              <label class="switch">
+                <input type="checkbox" id="auto-blank-toggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <button onclick="ab_cloakReal()" class="custom-gradient-btn">
+              Open About:Blank
+            </button>
+          </div>
+
+          <div id="about-content" style="display:none;">
+            <h3 class="section-title">about</h3>
+            <p style="color:#777;text-align:center;margin-top:40px;">(about page - blank for now)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h1>akkosploits</h1>
+  <div class="by">By Akko</div>
+
+  <form id="sj-form" class="flex-center">
+    <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
+    <input id="sj-address" type="text" placeholder="Search the web freely" autofocus required />
+  </form>
+
+  <script>
+    // ────────────────────────────────────────────────
+    // Your original settings/cloaking logic (kept exactly as-is)
+    // ────────────────────────────────────────────────
+    const settingsIcon = document.getElementById('settings-icon');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const autoBlankToggle = document.getElementById('auto-blank-toggle');
+    const contentArea = document.getElementById('content-area');
+
+    autoBlankToggle.checked = localStorage.getItem('autoAboutBlank') === 'true';
+    autoBlankToggle.addEventListener('change', (e) => localStorage.setItem('autoAboutBlank', e.target.checked));
+
+    function toggleSettings() {
+      if (settingsOverlay.style.display === 'flex') {
+        settingsOverlay.classList.remove('show');
+        settingsIcon.classList.remove('active');
+        setTimeout(() => settingsOverlay.style.display = 'none', 400);
+      } else {
+        settingsOverlay.style.display = 'flex';
+        settingsIcon.classList.add('active');
+        setTimeout(() => settingsOverlay.classList.add('show'), 10);
+      }
+    }
+
+    function showTab(tab) {
+      contentArea.classList.add('fade');
+
+      setTimeout(() => {
+        document.getElementById('cloaking-content').style.display = tab === 'cloaking' ? 'block' : 'none';
+        document.getElementById('about-content').style.display = tab === 'about' ? 'block' : 'none';
+
+        document.getElementById('cloaking-tab').classList.toggle('active', tab === 'cloaking');
+        document.getElementById('about-tab').classList.toggle('active', tab === 'about');
+
+        contentArea.classList.remove('fade');
+      }, 250);
+    }
+
+    showTab('cloaking');
+
+    function ab_cloakReal() {
+      if (typeof document !== "undefined") {
+        var iframe = document.createElement("iframe");
+        iframe.src = window.location.href;
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "none";
+        iframe.style.overflow = "hidden";
+
+        var newWindow = window.open("about:blank", "_blank");
+        if (!newWindow) return alert("Pop-up blocked! Allow pop-ups in Safari settings.");
+
+        newWindow.document.body.appendChild(iframe);
+        newWindow.document.body.style.width = "100%";
+        newWindow.document.body.style.height = "100%";
+        newWindow.document.body.style.margin = "0";
+        newWindow.document.body.style.padding = "0";
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // CHANGED: Fullscreen proxy replacement
+    // ────────────────────────────────────────────────
+    document.getElementById('sj-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      let address = document.getElementById('sj-address').value.trim();
+      if (!address) return;
+
+      let url;
+      if (address.includes(' ') || !address.includes('.')) {
+        url = 'https://www.google.com/search?q=' + encodeURIComponent(address);
+      } else {
+        url = address.startsWith('http') ? address : 'https://' + address;
+      }
+
+      const proxyUrl = __sj.prefix + encodeURIComponent(url);
+
+      // Replace entire body with fullscreen iframe
+      document.body.innerHTML = '';
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+      document.body.style.background = '#000';  // fallback if iframe fails to load
+
+      const iframe = document.createElement('iframe');
+      iframe.src = proxyUrl;
+      iframe.allowFullscreen = true;
+      iframe.style.cssText = `
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        border: none;
+        z-index: 2147483647;
+        background: #000;
+      `;
+      document.body.appendChild(iframe);
+    });
+  </script>
+</body>
 </html>
