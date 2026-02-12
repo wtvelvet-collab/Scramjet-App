@@ -142,6 +142,7 @@
       }
     }
 
+    // Your cloak function
     function ab_cloakReal() {
       if (typeof document !== "undefined") {
         var iframe = document.createElement("iframe");
@@ -162,7 +163,7 @@
       }
     }
 
-    // FIXED SEARCH: Full-screen takeover
+    // FIXED: Search results now replace the whole page (full-screen, no mini iframe)
     document.getElementById('sj-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       let address = document.getElementById('sj-address').value.trim();
@@ -170,13 +171,14 @@
 
       let url;
       if (address.includes(' ') || !address.includes('.')) {
-        // Search query → force proper Google URL
+        // It's a search → force full Google search URL
         url = 'https://www.google.com/search?q=' + encodeURIComponent(address);
       } else {
+        // It's a URL → add https:// if missing
         url = address.startsWith('http') ? address : 'https://' + address;
       }
 
-      // Proxy it full-screen (replace current page)
+      // Load proxied URL full-screen (replaces current page)
       const proxied = __sj.prefix + encodeURIComponent(url);
       window.location.href = proxied;
     });
