@@ -4,12 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 
-  <!-- Oxanium Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 
-  <!-- Scramjet & Bare-Mux -->
   <script src="/scram/scramjet.all.js"></script>
   <script src="/baremux/index.js"></script>
 
@@ -40,7 +38,7 @@
     h1 { font-size: clamp(4.5rem, 12vw, 9rem); font-weight: 300; letter-spacing: -0.03em; margin-bottom: 0.1em; text-shadow: 0 4px 20px rgba(0,0,0,0.6); }
     .by { font-size: clamp(1.6rem, 5vw, 2.8rem); font-weight: 300; color: #bbbbbb; margin-bottom: 4rem; opacity: 0.92; }
 
-    #sj-form { width: min(90%, 600px); position: relative; }
+    #sj-form { width: min(90%, 600px); position: relative; z-index: 5; }
     #sj-address {
       width: 100%; padding: 16px 24px; font-size: 1.15rem; border: none; border-radius: 999px;
       background: rgba(255,255,255,0.07); color: white; backdrop-filter: blur(10px);
@@ -49,42 +47,165 @@
     #sj-address::placeholder { color: rgba(255,255,255,0.45); }
     #sj-address:focus { background: rgba(255,255,255,0.11); box-shadow: 0 14px 50px rgba(0,0,0,0.6); transform: translateY(-1px); }
 
-    /* Settings Icon & Panel - original style */
-    #settings-icon { position: absolute; top: 20px; right: 20px; cursor: pointer; width: 42px; height: 42px; z-index: 10000; transition: 0.4s; }
+    /* Settings Icon */
+    #settings-icon {
+      position: absolute; top: 20px; right: 20px; cursor: pointer; width: 42px; height: 42px; z-index: 10000;
+      transition: transform 0.4s, opacity 0.3s;
+    }
+    #settings-icon:hover { opacity: 1; transform: scale(1.15); }
     #settings-icon.active { transform: rotate(180deg); }
 
-    #settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(15px); display: none; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: 0.4s; }
+    /* Settings Overlay */
+    #settings-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(15px);
+      display: none; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: opacity 0.25s;
+    }
     #settings-overlay.show { opacity: 1; }
 
-    #settings-panel { 
-        background: rgba(15,15,15,0.98); 
-        border: 1px solid #333; 
-        border-radius: 24px; 
-        padding: 40px 50px; 
-        width: min(90%, 500px); 
-        text-align: left; 
+    #settings-panel {
+      background: #0f0f0f;
+      border-radius: 16px;
+      width: 95%; 
+      max-width: 650px;
+      height: 75vh;
+      max-height: 800px;
+      overflow: hidden;
+      display: flex;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      position: relative;
     }
 
-    #settings-panel h2 { font-size: 28px; margin-bottom: 25px; font-weight: 400; color: #fff; }
-    #close-settings { float: right; font-size: 35px; cursor: pointer; color: #555; line-height: 0.5; }
+    /* Smaller Sidebar */
+    .sidebar {
+      width: 160px;
+      background: #111;
+      padding: 20px 10px;
+      border-right: 1px solid #222;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      color: #fff;
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      padding-left: 10px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      color: #888;
+      cursor: pointer;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      transition: background 0.25s ease;
+      position: relative;
+      font-size: 0.95rem;
+    }
+
+    .sidebar-item:hover {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .sidebar-item.active {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .sidebar-item span.icon {
+      margin-right: 10px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .content-area {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      color: #ddd;
+      transition: opacity 0.25s ease;
+    }
+
+    .content-area.fade {
+      opacity: 0;
+    }
+
+    .section-title {
+      margin: 0 0 20px;
+      font-size: 1.6rem;
+      color: #fff;
+    }
+
+    #close-settings {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #fff;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    #close-settings:hover { opacity: 1; }
 
     .setting-item span, .custom-gradient-btn {
-        font-size: 19px !important;
-        font-weight: 400;
-        letter-spacing: 0.02em;
+      font-size: 19px !important;
+      font-weight: 400;
+      letter-spacing: 0.02em;
     }
 
     .custom-gradient-btn {
       background: linear-gradient(135deg, #444, #000);
-      color: #fff; border: 1px solid #555; width: 100%; cursor: pointer; border-radius: 12px; padding: 16px; margin-top: 20px; transition: 0.2s;
+      color: #fff;
+      border: 1px solid #555;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+      transition: 0.2s;
     }
-    .custom-gradient-btn:hover { border-color: #00d4ff; transform: translateY(-2px); }
+    .custom-gradient-btn:hover {
+      border-color: #00d4ff;
+      transform: translateY(-2px);
+    }
 
-    .setting-item { display: flex; justify-content: space-between; align-items: center; margin: 25px 0; }
-    .switch { position: relative; display: inline-block; width: 54px; height: 28px; }
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 25px 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 54px;
+      height: 28px;
+    }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; inset: 0; background-color: #333; transition: .4s; border-radius: 34px; }
-    .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
     input:checked + .slider { background-color: #00d4ff; }
     input:checked + .slider:before { transform: translateX(26px); }
   </style>
@@ -101,15 +222,43 @@
   <div id="settings-overlay">
     <div id="settings-panel">
       <span id="close-settings" onclick="toggleSettings()">×</span>
-      <h2>Settings</h2>
-      <div class="setting-item">
-        <span>Auto About:Blank</span>
-        <label class="switch">
-          <input type="checkbox" id="auto-blank-toggle">
-          <span class="slider"></span>
-        </label>
+      <div style="display:flex;height:100%;width:100%;">
+        <div class="sidebar">
+          <div style="font-size:1.1rem;font-weight:600;color:#fff;margin-bottom:25px;padding-left:12px;">settings</div>
+          <div id="cloaking-tab" onclick="showTab('cloaking')" class="sidebar-item active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            cloaking
+          </div>
+          <div id="about-tab" onclick="showTab('about')" class="sidebar-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:10px;">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            about
+          </div>
+        </div>
+
+        <div class="content-area" id="content-area">
+          <div id="cloaking-content">
+            <h3 class="section-title">cloaking</h3>
+            <div class="setting-item">
+              <span>Auto About:Blank</span>
+              <label class="switch">
+                <input type="checkbox" id="auto-blank-toggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <button onclick="ab_cloakReal()" class="custom-gradient-btn">Open About:Blank</button>
+          </div>
+          <div id="about-content" style="display:none;">
+            <h3 class="section-title">about</h3>
+            <p style="color:#777;text-align:center;margin-top:40px;">(about page - blank for now)</p>
+          </div>
+        </div>
       </div>
-      <button onclick="ab_cloakReal()" class="custom-gradient-btn">Open About:Blank</button>
     </div>
   </div>
 
@@ -125,6 +274,7 @@
     const settingsIcon = document.getElementById('settings-icon');
     const settingsOverlay = document.getElementById('settings-overlay');
     const autoBlankToggle = document.getElementById('auto-blank-toggle');
+    const contentArea = document.getElementById('content-area');
 
     autoBlankToggle.checked = localStorage.getItem('autoAboutBlank') === 'true';
     autoBlankToggle.addEventListener('change', (e) => localStorage.setItem('autoAboutBlank', e.target.checked));
@@ -141,27 +291,32 @@
       }
     }
 
+    function showTab(tab) {
+      contentArea.classList.add('fade');
+      setTimeout(() => {
+        document.getElementById('cloaking-content').style.display = tab === 'cloaking' ? 'block' : 'none';
+        document.getElementById('about-content').style.display = tab === 'about' ? 'block' : 'none';
+        document.getElementById('cloaking-tab').classList.toggle('active', tab === 'cloaking');
+        document.getElementById('about-tab').classList.toggle('active', tab === 'about');
+        contentArea.classList.remove('fade');
+      }, 250);
+    }
+
+    showTab('cloaking');
+
     function ab_cloakReal() {
       if (typeof document !== "undefined") {
         var iframe = document.createElement("iframe");
         iframe.src = window.location.href;
-        iframe.style.width = "100%";
-        iframe.style.height = "100%";
-        iframe.style.border = "none";
-        iframe.style.overflow = "hidden";
-
+        iframe.style.cssText = "width:100%; height:100%; border:none; overflow:hidden;";
         var newWindow = window.open("about:blank", "_blank");
-        if (!newWindow) return alert("Pop-up blocked! Allow pop-ups in Safari settings.");
-
+        if (!newWindow) return alert("Pop-up blocked!");
         newWindow.document.body.appendChild(iframe);
-        newWindow.document.body.style.width = "100%";
-        newWindow.document.body.style.height = "100%";
-        newWindow.document.body.style.margin = "0";
-        newWindow.document.body.style.padding = "0";
+        newWindow.document.body.style.cssText = "width:100%; height:100%; margin:0; padding:0;";
       }
     }
 
-    // Search handler (full page takeover)
+    /* FIX: Search Result Issue */
     document.getElementById('sj-form').addEventListener('submit', (e) => {
       e.preventDefault();
       let address = document.getElementById('sj-address').value.trim();
@@ -174,7 +329,14 @@
         url = address.startsWith('http') ? address : 'https://' + address;
       }
 
-      window.location.href = __sj.prefix + encodeURIComponent(url);
+      // Ensure the proxy loads the URL by redirecting the top-level location
+      // This prevents the "mini screen" look shown in your screenshot
+      if (window.__sj && __sj.prefix) {
+        window.location.href = __sj.prefix + encodeURIComponent(url);
+      } else {
+        // Fallback if proxy scripts aren't loaded yet
+        window.location.href = "/scram/" + encodeURIComponent(url);
+      }
     });
   </script>
 </body>
