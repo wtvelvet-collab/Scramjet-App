@@ -3,9 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-    <title>akkosploits</title>
+    <title>⠀</title>
 
-    <link rel="shortcut icon" href="favicon.webp" />
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500&display=swap" rel="stylesheet">
@@ -43,31 +44,54 @@
             overflow: hidden;
         }
 
-        /* --- Main Page Settings Button --- */
-        #open-settings-btn {
+        /* --- Shared Pill Style (No Outlines/Borders) --- */
+        .pill-element {
+            background: #202124;
+            color: #ffffff;
+            border: none !important;
+            outline: none !important;
+            border-radius: 9999px !important;
+            font-family: 'Oxanium', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .top-btn {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #202124;
-            color: #ffffff;
-            border: 1px solid #5f6368;
-            border-radius: 12px; 
-            padding: 10px 20px;
-            font-family: 'Oxanium', sans-serif;
+            padding: 10px 25px;
             font-size: 1rem;
             font-weight: 300;
             cursor: pointer;
-            transition: all 0.18s ease;
             z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        #open-settings-btn:hover {
-            box-shadow: 0 1px 10px rgba(255,255,255,0.12);
-            border-color: #8a8c8f;
+        .top-btn:hover, #sj-address:hover {
+            background: #2d2e31;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             transform: translateY(-1px);
         }
 
-        /* --- Settings Panel Overlay --- */
+        #home-btn {
+            display: none; 
+        }
+
+        /* --- Search Bar Pill --- */
+        #sj-address {
+            width: 100%; 
+            max-width: 680px; 
+            height: 52px; 
+            margin: 0 auto; 
+            padding: 0 24px;
+            font-size: 1.18rem; 
+            font-weight: 300; 
+            text-align: center;
+        }
+
+        /* --- Settings Overlay & Animations --- */
         #settings-overlay {
             position: fixed;
             inset: 0;
@@ -77,6 +101,13 @@
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #settings-overlay.active {
+            display: flex;
+            opacity: 1;
         }
 
         #settings-panel {
@@ -90,6 +121,13 @@
             display: flex;
             box-shadow: 0 24px 70px rgba(0,0,0,0.8);
             position: relative;
+            /* Animation starting state */
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #settings-overlay.active #settings-panel {
+            transform: scale(1);
         }
 
         #close-settings {
@@ -101,49 +139,17 @@
             color: #aaa;
             line-height: 1;
             z-index: 101;
-            transition: color 0.12s, transform 0.12s;
         }
 
-        .sidebar { 
-            width: 170px; 
-            background: #111111; 
-            padding: 24px 0; 
-            position: relative; 
-        }
-
-        .sidebar-header { 
-            font-size: 1.15rem; 
-            font-weight: 600; 
-            color: #ffffff; 
-            margin-bottom: 28px; 
-            padding-left: 16px; 
-        }
-
-        .sidebar-item { 
-            display: flex; 
-            align-items: center; 
-            padding: 12px 16px; 
-            padding-left: 24px; 
-            color: #888888; 
-            cursor: pointer; 
-            position: relative; 
-            z-index: 2;
-            transition: color 0.12s; 
-            height: 48px; 
-        }
-
+        .sidebar { width: 170px; background: #111111; padding: 24px 0; position: relative; }
+        .sidebar-header { font-size: 1.15rem; font-weight: 600; color: #ffffff; margin-bottom: 28px; padding-left: 16px; }
+        .sidebar-item { display: flex; align-items: center; padding: 12px 16px; padding-left: 24px; color: #888888; cursor: pointer; position: relative; z-index: 2; height: 48px; }
         .sidebar-item.active { color: #ffffff; font-weight: 500; }
 
         #sidebar-highlight {
             position: absolute;
-            top: 0; 
-            left: 8px; 
-            width: calc(100% - 16px); 
-            height: 48px;
-            background: #1a1a1a; 
-            border-radius: 10px; 
-            z-index: 1;
-            pointer-events: none;
+            top: 0; left: 8px; width: calc(100% - 16px); height: 48px;
+            background: #1a1a1a; border-radius: 10px; z-index: 1; pointer-events: none;
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -151,7 +157,7 @@
         .section-title { margin: 0 0 24px; font-size: 1.65rem; color: #ffffff; font-weight: 500; }
 
         .dark-gray-btn {
-            background: #1c1c1c; color: #e0e0e0; border: 1px solid #555555;
+            background: #1c1c1c; color: #e0e0e0; border: none;
             width: 100%; padding: 15px; border-radius: 10px; font-size: 1.12rem;
             cursor: pointer; transition: all 0.12s ease; margin-top: 12px;
             font-family: 'Oxanium', sans-serif;
@@ -167,39 +173,37 @@
 
         /* --- Page Layout --- */
         .center-wrapper { text-align: center; width: 100%; max-width: 700px; padding: 0 20px; margin-top: -14vh; }
-        h1 { font-size: 5.5rem; margin-bottom: 1.8rem; font-weight: 300; letter-spacing: -3px; color: #ffffff; }
-        
-        /* --- FIXED CIRCLE SEARCH BAR --- */
-        #sj-address {
-            width: 100%; max-width: 680px; height: 52px; margin: 0 auto; padding: 0 24px;
-            font-size: 1.18rem; font-weight: 300; background: #202124; color: #ffffff;
-            border: 1px solid #5f6368; 
-            border-radius: 9999px !important; /* Force pill/circle shape */
-            outline: none !important;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.4); 
-            transition: border-color 0.18s ease; 
-            text-align: center;
-            font-family: 'Oxanium', sans-serif;
+        h1 { 
+            font-size: 5.5rem; 
+            margin-bottom: 1.8rem; 
+            font-weight: 300; 
+            letter-spacing: -3px; 
+            color: #ffffff; 
+            cursor: pointer; 
+            user-select: none;
+            transition: opacity 0.2s;
         }
+        h1:hover { opacity: 0.8; }
         
         .error-area { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); color: #ea4335; text-align: center; width: 90%; }
 
         @media (max-width: 600px) {
             #sj-address { height: 48px; font-size: 1.1rem; }
             h1 { font-size: 4.2rem; }
-            #open-settings-btn { top: 10px; right: 10px; padding: 8px 16px; }
+            .top-btn { top: 10px; right: 10px; padding: 8px 20px; font-size: 0.9rem; }
         }
     </style>
 </head>
 
 <body>
-    <button id="open-settings-btn" onclick="openSettings()">settings</button>
+    <button id="open-settings-btn" class="pill-element top-btn" onclick="openSettings()">settings</button>
+    <button id="home-btn" class="pill-element top-btn" onclick="location.reload()">home</button>
 
     <div class="center-wrapper">
-        <h1>akkosploits</h1>
+        <h1 onclick="location.reload()">akkosploits</h1>
         <form id="sj-form">
             <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
-            <input id="sj-address" type="text" placeholder="search whatever you want here - akko!!" autofocus />
+            <input id="sj-address" class="pill-element" type="text" placeholder="search whatever you want here - akko!!" autofocus />
         </form>
     </div>
 
@@ -242,35 +246,48 @@
     </div>
 
     <script>
-        // --- Added Logic to Hide Settings on Search ---
         const sjForm = document.getElementById('sj-form');
         const settingsBtn = document.getElementById('open-settings-btn');
+        const homeBtn = document.getElementById('home-btn');
+        const overlay = document.getElementById('settings-overlay');
 
         if (sjForm) {
             sjForm.addEventListener('submit', () => {
-                if (settingsBtn) {
-                    settingsBtn.style.display = 'none';
-                }
+                settingsBtn.style.display = 'none';
+                homeBtn.style.display = 'flex'; 
             });
         }
 
         function openSettings() { 
-            document.getElementById('settings-overlay').style.display = 'flex'; 
+            overlay.style.display = 'flex';
+            // Small timeout to allow display:flex to register before adding animation class
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 10);
             showTab('cloaking'); 
         }
-        function closeSettings() { document.getElementById('settings-overlay').style.display = 'none'; }
+
+        function closeSettings() { 
+            overlay.classList.remove('active');
+            // Wait for animation to finish before hiding display
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+        }
+
+        // Close on clicking outside the panel
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeSettings();
+        });
 
         function showTab(tab) {
             const highlight = document.getElementById('sidebar-highlight');
             const clickedTab = document.getElementById(tab + '-tab');
-            
             if (highlight && clickedTab) {
                 highlight.style.transform = `translateY(${clickedTab.offsetTop}px)`;
             }
-            
             document.getElementById('cloaking-content').style.display = tab === 'cloaking' ? 'block' : 'none';
             document.getElementById('about-content').style.display = tab === 'about' ? 'block' : 'none';
-            
             document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
             clickedTab.classList.add('active');
         }
@@ -279,7 +296,6 @@
             const isEnabled = localStorage.getItem('autoCloak') === 'true';
             const toggle = document.getElementById('auto-cloak-toggle');
             if (toggle) toggle.checked = isEnabled;
-            
             if (isEnabled) ab_cloakReal();
         });
 
