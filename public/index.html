@@ -44,6 +44,7 @@
             overflow: hidden;
         }
 
+        /* --- Settings Button --- */
         #open-settings-btn {
             position: fixed;
             top: 20px;
@@ -61,7 +62,7 @@
             cursor: pointer;
             transition: all 0.18s ease;
             z-index: 100;
-            outline: none;
+            outline: none !important; /* Removed outline */
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -69,8 +70,8 @@
         }
 
         #open-settings-btn:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(255,105,180,0.25);
+            outline: none !important;
+            box-shadow: none !important; /* Removed the glow/outline */
         }
 
         #open-settings-btn:hover {
@@ -79,6 +80,7 @@
             transform: translateY(-1px);
         }
 
+        /* --- Settings Panel --- */
         #settings-overlay {
             position: fixed;
             inset: 0;
@@ -141,6 +143,7 @@
         .center-wrapper { text-align: center; width: 100%; max-width: 700px; padding: 0 20px; margin-top: -14vh; }
         h1 { font-size: 5.5rem; margin-bottom: 1.8rem; font-weight: 300; letter-spacing: -3px; color: #ffffff; }
 
+        /* --- Search Bar --- */
         #sj-address {
             width: 100%;
             max-width: 680px;
@@ -153,7 +156,7 @@
             color: #ffffff;
             border: 1px solid #5f6368;
             border-radius: 9999px;
-            outline: none !important;
+            outline: none !important; /* Removed outline */
             box-shadow: 0 1px 6px rgba(0,0,0,0.4);
             transition: all 0.18s ease;
             text-align: center;
@@ -167,8 +170,8 @@
         #sj-address:active {
             outline: none !important;
             border-radius: 9999px !important;
-            box-shadow: 0 0 0 3px rgba(255,105,180,0.3);
-            border-color: #ff69b4;
+            box-shadow: none !important; /* Removed glow/outline */
+            border-color: #5f6368; /* Keep border color subtle */
         }
 
         .error-area { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); color: #ea4335; text-align: center; width: 90%; }
