@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <title>akkosploits</title>
 
-    <link rel="shortcut icon" href="favicon.webp" />
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,7 @@
             overflow:hidden;
         }
 
-        .top-btn {
+        #open-settings-btn {
             position:fixed;
             top:20px;
             right:20px;
@@ -59,18 +59,26 @@
             justify-content:center;
             min-width:120px;
             box-shadow:0 1px 6px rgba(0,0,0,0.3);
+            opacity:1;
+            visibility:visible;
+            transform:scale(1);
+        }
+
+        #open-settings-btn.hidden {
             opacity:0;
             visibility:hidden;
+            transform:scale(0.8);
             pointer-events:none;
         }
 
-        .top-btn.visible {
-            opacity:1;
-            visibility:visible;
-            pointer-events:auto;
+        #open-settings-btn:focus,
+        #open-settings-btn:focus-visible,
+        #open-settings-btn:active {
+            outline:none !important;
+            box-shadow:none !important;
         }
 
-        .top-btn:hover {
+        #open-settings-btn:hover {
             box-shadow:0 1px 10px rgba(255,255,255,0.12);
             transform:translateY(-1px);
         }
@@ -132,13 +140,12 @@
         @media (max-width:600px) {
             #sj-address { height:48px; font-size:1.1rem; padding:0 20px; }
             h1 { font-size:4.2rem; }
-            .top-btn { top:10px; height:48px; line-height:48px; padding:0 20px; font-size:0.95rem; min-width:100px; right:10px; }
+            #open-settings-btn { top:10px; right:10px; height:48px; line-height:48px; padding:0 20px; font-size:0.95rem; }
         }
     </style>
 </head>
 <body>
-    <button id="open-settings-btn" class="top-btn visible" onclick="openSettings()">settings</button>
-    <button id="home-btn" class="top-btn" onclick="goHome()">home</button>
+    <button id="open-settings-btn" onclick="openSettings()">settings</button>
 
     <div class="center-wrapper">
         <h1>akkosploits</h1>
@@ -188,20 +195,13 @@
 
     <script>
         const settingsBtn = document.getElementById('open-settings-btn');
-        const homeBtn     = document.getElementById('home-btn');
 
-        function showHomeHideSettings() {
-            settingsBtn.classList.remove('visible');
-            homeBtn.classList.add('visible');
+        function hideSettingsButton() {
+            if (settingsBtn) settingsBtn.classList.add('hidden');
         }
 
-        function showSettingsHideHome() {
-            homeBtn.classList.remove('visible');
-            settingsBtn.classList.add('visible');
-        }
-
-        function goHome() {
-            window.location.href = '/';
+        function showSettingsButton() {
+            if (settingsBtn) settingsBtn.classList.remove('hidden');
         }
 
         function openSettings() {
@@ -222,15 +222,13 @@
             document.getElementById('cloaking-content').style.display = tab === 'cloaking' ? 'block' : 'none';
             document.getElementById('about-content').style.display = tab === 'about' ? 'block' : 'none';
             document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-            if (clickedTab) clickedTab.classList.add('active');
+            clickedTab.classList.add('active');
         }
-
-        showSettingsHideHome();
 
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('sj-form');
-            form.addEventListener('submit', () => {
-                showHomeHideSettings();
+            form.addEventListener('submit', (e) => {
+                hideSettingsButton();
                 closeSettings();
             });
 
@@ -240,7 +238,7 @@
                     args[0].includes('/service/') ||
                     (args[0].startsWith('http') && !args[0].includes(window.location.host))
                 )) {
-                    showHomeHideSettings();
+                    hideSettingsButton();
                     closeSettings();
                 }
                 return originalFetch.apply(this, args);
@@ -248,7 +246,7 @@
 
             window.addEventListener('popstate', () => {
                 if (window.location.pathname === '/' || window.location.pathname === '') {
-                    showSettingsHideHome();
+                    showSettingsButton();
                 }
             });
         });
@@ -265,74 +263,21 @@
             localStorage.setItem('autoCloak', checkbox.checked);
         }
 
-        // FIXED: Home button now reloads the iframe to your homepage (works after searching)
         function ab_cloakReal() {
-            if (typeof document === "undefined") return;
-
-            const iframe = document.createElement("iframe");
-            iframe.src = window.location.href;
-            iframe.style.width = "100%";
-            iframe.style.height = "100%";
-            iframe.style.border = "none";
-            iframe.style.overflow = "hidden";
-
-            const newWindow = window.open("about:blank", "_blank");
-            if (!newWindow) return;
-
-            newWindow.document.body.appendChild(iframe);
-            newWindow.document.body.style.width = "100%";
-            newWindow.document.body.style.height = "100%";
-            newWindow.document.body.style.margin = "0";
-            newWindow.document.body.style.padding = "0";
-
-            newWindow.document.body.insertAdjacentHTML('beforeend', `
-                <button id="home-cloaked" style="
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: #202124;
-                    color: #ffffff;
-                    border: none;
-                    border-radius: 9999px;
-                    padding: 0 24px;
-                    height: 52px;
-                    line-height: 52px;
-                    font-family: 'Oxanium', sans-serif;
-                    font-size: 1rem;
-                    font-weight: 300;
-                    cursor: pointer;
-                    z-index: 9999;
-                    outline: none;
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    min-width: 120px;
-                    box-shadow: 0 1px 6px rgba(0,0,0,0.3);
-                    transition: all 0.18s ease;
-                ">home</button>
-
-                <script>
-                    const btn = document.getElementById('home-cloaked');
-                    const iframe = document.querySelector('iframe');
-
-                    btn.onclick = function() {
-                        if (iframe) {
-                            iframe.src = '/';   // ← this reloads the iframe to your homepage (via proxy)
-                        } else {
-                            window.location.href = '/';
-                        }
-                    };
-
-                    btn.onmouseover = function() {
-                        this.style.boxShadow = '0 1px 10px rgba(255,255,255,0.12)';
-                        this.style.transform = 'translateY(-1px)';
-                    };
-                    btn.onmouseout = function() {
-                        this.style.boxShadow = '0 1px 6px rgba(0,0,0,0.3)';
-                        this.style.transform = '';
-                    };
-                <\/script>
-            `);
+            if (typeof document !== "undefined") {
+                var iframe = document.createElement("iframe");
+                iframe.src = window.location.href;
+                iframe.style.width = "100%"; iframe.style.height = "100%";
+                iframe.style.border = "none"; iframe.style.overflow = "hidden";
+                var newWindow = window.open("about:blank", "_blank");
+                if (newWindow) {
+                    newWindow.document.body.appendChild(iframe);
+                    newWindow.document.body.style.width = "100%";
+                    newWindow.document.body.style.height = "100%";
+                    newWindow.document.body.style.margin = "0";
+                    newWindow.document.body.style.padding = "0";
+                }
+            }
         }
     </script>
 </body>
