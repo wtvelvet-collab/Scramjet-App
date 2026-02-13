@@ -39,6 +39,7 @@
         .top-btn {
             position:fixed;
             top:20px;
+            right:20px;              /* same position for both buttons */
             background:#202124;
             color:#ffffff;
             border:none;
@@ -73,9 +74,6 @@
             box-shadow:0 1px 10px rgba(255,255,255,0.12);
             transform:translateY(-1px);
         }
-
-        #open-settings-btn { right:20px; }
-        #home-btn        { right:180px; }
 
         #settings-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.94); backdrop-filter:blur(14px); display:none; align-items:center; justify-content:center; z-index:9999; }
         #settings-panel { background:#0f0f0f; border-radius:16px; width:92%; max-width:660px; height:72vh; max-height:820px; overflow:hidden; display:flex; box-shadow:0 24px 70px rgba(0,0,0,0.8); position:relative; }
@@ -134,9 +132,7 @@
         @media (max-width:600px) {
             #sj-address { height:48px; font-size:1.1rem; padding:0 20px; }
             h1 { font-size:4.2rem; }
-            .top-btn { top:10px; height:48px; line-height:48px; padding:0 20px; font-size:0.95rem; min-width:100px; }
-            #open-settings-btn { right:10px; }
-            #home-btn { right:130px; }
+            .top-btn { top:10px; height:48px; line-height:48px; padding:0 20px; font-size:0.95rem; min-width:100px; right:10px; }
         }
     </style>
 </head>
@@ -194,14 +190,14 @@
         const settingsBtn = document.getElementById('open-settings-btn');
         const homeBtn     = document.getElementById('home-btn');
 
-        function updateButtonStates(isHome) {
-            if (isHome) {
-                settingsBtn.classList.add('visible');
-                homeBtn.classList.remove('visible');
-            } else {
-                settingsBtn.classList.remove('visible');
-                homeBtn.classList.add('visible');
-            }
+        function showHomeHideSettings() {
+            settingsBtn.classList.remove('visible');
+            homeBtn.classList.add('visible');
+        }
+
+        function showSettingsHideHome() {
+            homeBtn.classList.remove('visible');
+            settingsBtn.classList.add('visible');
         }
 
         function goHome() {
@@ -229,35 +225,33 @@
             if (clickedTab) clickedTab.classList.add('active');
         }
 
-        // Initial state: assume home
-        updateButtonStates(true);
+        // Start on home page
+        showSettingsHideHome();
 
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('sj-form');
-            form.addEventListener('submit', (e) => {
-                e.preventDefault(); // prevent default if needed
-                updateButtonStates(false);
+            form.addEventListener('submit', () => {
+                showHomeHideSettings();
                 closeSettings();
-                // actual proxy load happens in search.js probably
             });
 
-            // Detect proxy requests
             const originalFetch = window.fetch;
             window.fetch = function(...args) {
                 if (typeof args[0] === 'string' && (
                     args[0].includes('/service/') ||
                     (args[0].startsWith('http') && !args[0].includes(window.location.host))
                 )) {
-                    updateButtonStates(false);
+                    showHomeHideSettings();
                     closeSettings();
                 }
                 return originalFetch.apply(this, args);
             };
 
-            // When browser back/forward changes URL
+            // Reset when returning to homepage
             window.addEventListener('popstate', () => {
-                const isHome = (window.location.pathname === '/' || window.location.pathname === '');
-                updateButtonStates(isHome);
+                if (window.location.pathname === '/' || window.location.pathname === '') {
+                    showSettingsHideHome();
+                }
             });
         });
 
@@ -292,10 +286,10 @@
             newWindow.document.body.style.margin = "0";
             newWindow.document.body.style.padding = "0";
 
-            // Inject home button in about:blank
+            // Inject home button in the same top-right spot
             newWindow.document.body.insertAdjacentHTML('beforeend', `
                 <button id="injected-home" style="
-                    position:fixed; top:20px; right:180px;
+                    position:fixed; top:20px; right:20px;
                     background:#202124; color:#ffffff; border:none;
                     border-radius:9999px; padding:0 24px; height:52px;
                     line-height:52px; font-family:'Oxanium',sans-serif;
@@ -305,14 +299,13 @@
                     box-shadow:0 1px 6px rgba(0,0,0,0.3);
                 ">home</button>
                 <script>
-                    document.getElementById('injected-home').onclick = () => {
-                        window.location.href = '/';
-                    };
-                    document.getElementById('injected-home').onmouseover = function() {
+                    const btn = document.getElementById('injected-home');
+                    btn.onclick = () => { window.location.href = '/'; };
+                    btn.onmouseover = function() {
                         this.style.boxShadow = '0 1px 10px rgba(255,255,255,0.12)';
                         this.style.transform = 'translateY(-1px)';
                     };
-                    document.getElementById('injected-home').onmouseout = function() {
+                    btn.onmouseout = function() {
                         this.style.boxShadow = '0 1px 6px rgba(0,0,0,0.3)';
                         this.style.transform = '';
                     };
