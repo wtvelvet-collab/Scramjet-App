@@ -24,124 +24,164 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            outline: none !important;
         }
 
         html, body {
             height: 100%;
-            background: #000000;
-            color: #ffffff;
-            font-family: 'Oxanium', system-ui, sans-serif;
-            overflow: hidden;
         }
 
         body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
             min-height: 100vh;
-        }
-
-        /* --- Settings Button --- */
-        #open-settings-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #1a1b1e; 
+            background: #000000;
             color: #ffffff;
-            border: none;
-            border-radius: 9999px;
-            padding: 0 24px;
-            height: 52px;
-            cursor: pointer;
-            z-index: 100;
-            font-family: inherit;
-            transition: background 0.2s ease;
-        }
-
-        #open-settings-btn:hover {
-            background: #2a2b2e; /* Lighter shade on hover */
-        }
-
-        /* --- Search Bar --- */
-        #sj-address {
-            width: 100%;
-            max-width: 680px;
-            height: 52px;
-            padding: 0 24px;
-            font-size: 1.18rem;
-            background: #16171a; 
-            color: #ffffff;
-            border: none;
-            border-radius: 9999px;
-            text-align: center;
-            font-family: inherit;
-            transition: background 0.2s ease;
-        }
-
-        #sj-address:hover {
-            background: #232429; /* Lighter shade on hover */
-        }
-
-        #sj-address:focus {
-            background: #1c1d21;
-        }
-
-        /* --- Settings Panel Overlay --- */
-        #settings-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(12px);
-            display: none;
-            z-index: 9999;
+            font-family: 'Oxanium', system-ui, sans-serif;
+            font-weight: 300;
+            font-size: 16px;
+            display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        #settings-panel {
-            background: #0f0f0f;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 600px;
-            height: 70vh;
-            display: flex;
             position: relative;
             overflow: hidden;
         }
 
+        #open-settings-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #202124;
+            color: #ffffff;
+            border: 1px solid #5f6368;
+            border-radius: 9999px;
+            padding: 0 24px;
+            height: 52px;
+            line-height: 52px;
+            font-family: 'Oxanium', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            z-index: 100;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        #open-settings-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,105,180,0.25);
+        }
+
+        #open-settings-btn:hover {
+            box-shadow: 0 1px 10px rgba(255,255,255,0.12);
+            border-color: #8a8c8f;
+            transform: translateY(-1px);
+        }
+
+        #settings-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.94);
+            backdrop-filter: blur(14px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #settings-panel {
+            background: #0f0f0f;
+            border-radius: 16px;
+            width: 92%;
+            max-width: 660px;
+            height: 72vh;
+            max-height: 820px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
         #close-settings {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2rem;
+            top: 14px;
+            right: 18px;
+            font-size: 2.6rem;
             cursor: pointer;
-            color: #666;
-            z-index: 10;
+            color: #aaa;
+            line-height: 1;
+            z-index: 101;
+            transition: color 0.12s, transform 0.12s;
         }
 
-        .sidebar { width: 160px; background: #111; padding: 20px 0; border-right: 1px solid #222; }
-        .sidebar-item { padding: 12px 20px; cursor: pointer; color: #555; transition: 0.2s; }
-        .sidebar-item.active { color: #fff; background: #1a1a1a; }
-        .content-area { flex: 1; padding: 30px; }
-
-        .center-wrapper { text-align: center; width: 100%; max-width: 700px; margin-top: -10vh; }
-        h1 { font-size: 4.5rem; margin-bottom: 2rem; font-weight: 300; letter-spacing: -1px; }
-
-        /* --- Toggles & Buttons --- */
-        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background: #333; border-radius: 20px; transition: .3s; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: .3s; }
-        input:checked + .slider { background: #ff69b4; }
-        input:checked + .slider:before { transform: translateX(22px); }
+        .sidebar { width: 170px; background: #111111; padding: 24px 0; position: relative; }
+        .sidebar-header { font-size: 1.15rem; font-weight: 600; color: #ffffff; margin-bottom: 28px; padding-left: 16px; }
+        .sidebar-item { display: flex; align-items: center; padding: 12px 16px; padding-left: 24px; color: #888888; cursor: pointer; position: relative; z-index: 2; transition: color 0.12s; height: 48px; }
+        .sidebar-item.active { color: #ffffff; font-weight: 500; }
+        #sidebar-highlight { position: absolute; top: 0; left: 8px; width: calc(100% - 16px); height: 48px; background: #1a1a1a; border-radius: 10px; z-index: 1; pointer-events: none; transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .content-area { flex: 1; padding: 32px; overflow-y: auto; color: #cccccc; }
+        .section-title { margin: 0 0 24px; font-size: 1.65rem; color: #ffffff; font-weight: 500; }
 
         .dark-gray-btn {
-            background: #222; border: none; color: #fff;
-            padding: 12px; width: 100%; border-radius: 10px; cursor: pointer;
-            font-family: inherit; transition: 0.2s;
+            background: #1c1c1c; color: #e0e0e0; border: 1px solid #555555;
+            width: 100%; padding: 15px; border-radius: 10px; font-size: 1.12rem;
+            cursor: pointer; transition: all 0.12s ease; margin-top: 12px;
+            font-family: 'Oxanium', sans-serif;
         }
-        .dark-gray-btn:hover { background: #2a2a2a; }
+
+        .setting-row { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding: 10px 0; border-top: 1px solid #222; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #ff69b4; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .center-wrapper { text-align: center; width: 100%; max-width: 700px; padding: 0 20px; margin-top: -14vh; }
+        h1 { font-size: 5.5rem; margin-bottom: 1.8rem; font-weight: 300; letter-spacing: -3px; color: #ffffff; }
+
+        #sj-address {
+            width: 100%;
+            max-width: 680px;
+            height: 52px;
+            margin: 0 auto;
+            padding: 0 24px;
+            font-size: 1.18rem;
+            font-weight: 300;
+            background: #202124;
+            color: #ffffff;
+            border: 1px solid #5f6368;
+            border-radius: 9999px;
+            outline: none !important;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.4);
+            transition: all 0.18s ease;
+            text-align: center;
+            font-family: 'Oxanium', sans-serif;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        #sj-address:focus,
+        #sj-address:focus-visible,
+        #sj-address:active {
+            outline: none !important;
+            border-radius: 9999px !important;
+            box-shadow: 0 0 0 3px rgba(255,105,180,0.3);
+            border-color: #ff69b4;
+        }
+
+        .error-area { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); color: #ea4335; text-align: center; width: 90%; }
+
+        @media (max-width: 600px) {
+            #sj-address { height: 48px; font-size: 1.1rem; padding: 0 20px; }
+            h1 { font-size: 4.2rem; }
+            #open-settings-btn { 
+                top: 10px; right: 10px; 
+                height: 48px; line-height: 48px; padding: 0 20px; 
+                font-size: 0.95rem; 
+            }
+        }
     </style>
 </head>
 
@@ -152,80 +192,113 @@
         <h1>akkosploits</h1>
         <form id="sj-form">
             <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
-            <input id="sj-address" type="text" placeholder="search whatever you want here..." autofocus />
+            <input id="sj-address" type="text" placeholder="search whatever you want here - akko!!" autofocus />
         </form>
     </div>
 
     <div id="settings-overlay">
         <div id="settings-panel">
             <span id="close-settings" onclick="closeSettings()">×</span>
-            <div class="sidebar">
-                <div id="cloaking-tab" onclick="showTab('cloaking')" class="sidebar-item active">cloaking</div>
-                <div id="about-tab" onclick="showTab('about')" class="sidebar-item">about</div>
-            </div>
-            <div class="content-area">
-                <div id="cloaking-content">
-                    <h2 style="margin-bottom: 20px;">Cloaking</h2>
-                    <button onclick="ab_cloakReal()" class="dark-gray-btn">Open About:Blank</button>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 25px;">
-                        <span>Auto-Cloak Page</span>
-                        <label class="switch">
-                            <input type="checkbox" id="auto-cloak-toggle" onchange="toggleAutoCloak()">
-                            <span class="slider"></span>
-                        </label>
+            <div style="display:flex; height:100%; width:100%; position:relative;">
+                <div class="sidebar">
+                    <div class="sidebar-header">settings</div>
+                    <div id="sidebar-highlight"></div>
+                    <div class="sidebar-items">
+                        <div id="cloaking-tab" onclick="showTab('cloaking')" class="sidebar-item active">cloaking</div>
+                        <div id="about-tab" onclick="showTab('about')" class="sidebar-item">about</div>
                     </div>
                 </div>
-                <div id="about-content" style="display:none;">
-                    <h2>About</h2>
-                    <p style="margin-top:20px; color:#555;">v1.0 - akkosploits</p>
+                <div class="content-area">
+                    <div id="cloaking-content">
+                        <h3 class="section-title">cloaking</h3>
+                        <button onclick="ab_cloakReal()" class="dark-gray-btn">Open About:Blank</button>
+                        <div class="setting-row">
+                            <span class="setting-label">Auto About:Blank</span>
+                            <label class="switch">
+                                <input type="checkbox" id="auto-cloak-toggle" onchange="toggleAutoCloak()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="about-content" style="display:none;">
+                        <h3 class="section-title">about</h3>
+                        <p style="color:#777; text-align:center; margin-top:40px;">v1.0 - akkosploits</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function openSettings() { 
-            document.getElementById('settings-overlay').style.display = 'flex'; 
-        }
-        function closeSettings() { 
-            document.getElementById('settings-overlay').style.display = 'none'; 
-        }
+    <div class="error-area">
+        <p id="sj-error"></p>
+        <pre id="sj-error-code"></pre>
+    </div>
 
-        // Logic to hide UI elements when a search is triggered
-        document.getElementById('sj-form').addEventListener('submit', function() {
-            closeSettings();
-            // This hides the settings button when results load
-            document.getElementById('open-settings-btn').style.display = 'none';
-        });
+    <script>
+        function openSettings() {
+            document.getElementById('settings-overlay').style.display = 'flex';
+            showTab('cloaking');
+        }
+        function closeSettings() { document.getElementById('settings-overlay').style.display = 'none'; }
 
         function showTab(tab) {
+            const highlight = document.getElementById('sidebar-highlight');
+            const clickedTab = document.getElementById(tab + '-tab');
+            if (highlight && clickedTab) {
+                highlight.style.transform = `translateY(${clickedTab.offsetTop}px)`;
+            }
             document.getElementById('cloaking-content').style.display = tab === 'cloaking' ? 'block' : 'none';
             document.getElementById('about-content').style.display = tab === 'about' ? 'block' : 'none';
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(tab + '-tab').classList.add('active');
+            document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
+            clickedTab.classList.add('active');
         }
+
+        window.addEventListener('load', () => {
+            const isEnabled = localStorage.getItem('autoCloak') === 'true';
+            const toggle = document.getElementById('auto-cloak-toggle');
+            if (toggle) toggle.checked = isEnabled;
+            if (isEnabled) ab_cloakReal();
+        });
 
         function toggleAutoCloak() {
-            localStorage.setItem('autoCloak', document.getElementById('auto-cloak-toggle').checked);
+            const checkbox = document.getElementById('auto-cloak-toggle');
+            localStorage.setItem('autoCloak', checkbox.checked);
         }
-
-        window.onload = () => {
-            const saved = localStorage.getItem('autoCloak') === 'true';
-            const toggle = document.getElementById('auto-cloak-toggle');
-            if(toggle) toggle.checked = saved;
-            if(saved) ab_cloakReal();
-        };
 
         function ab_cloakReal() {
-            const win = window.open('about:blank', '_blank');
-            if (win) {
-                const iframe = win.document.createElement('iframe');
+            if (typeof document !== "undefined") {
+                var iframe = document.createElement("iframe");
                 iframe.src = window.location.href;
-                iframe.style = "margin:0;padding:0;border:none;width:100%;height:100%;overflow:hidden;";
-                win.document.body.appendChild(iframe);
-                win.document.body.style.margin = "0";
+                iframe.style.width = "100%"; iframe.style.height = "100%";
+                iframe.style.border = "none"; iframe.style.overflow = "hidden";
+                var newWindow = window.open("about:blank", "_blank");
+                if (newWindow) {
+                    newWindow.document.body.appendChild(iframe);
+                    newWindow.document.body.style.width = "100%";
+                    newWindow.document.body.style.height = "100%";
+                    newWindow.document.body.style.margin = "0";
+                    newWindow.document.body.style.padding = "0";
+                }
             }
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('sj-form');
+            form.addEventListener('submit', () => {
+                closeSettings();
+            });
+
+            const originalFetch = window.fetch;
+            window.fetch = function(...args) {
+                if (typeof args[0] === 'string' && (
+                    args[0].includes('/service/') ||
+                    (args[0].startsWith('http') && !args[0].includes(window.location.host))
+                )) {
+                    closeSettings();
+                }
+                return originalFetch.apply(this, args);
+            };
+        });
     </script>
 </body>
 </html>
