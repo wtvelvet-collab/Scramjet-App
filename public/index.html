@@ -140,43 +140,53 @@
         <pre id="sj-error-code"></pre>
     </div>
 
-    <!-- Fixed navigation: no prefix, direct location change for Scramjet SW interception -->
+    <!-- Smart URL detection + proxy routing added here -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('sj-form');
-            const input = document.getElementById('sj-address');
+            const addressInput = document.getElementById('sj-address');
+            const errorDisplay = document.getElementById('sj-error');
 
-            if (!form || !input) {
-                console.error("Form or input element missing");
-                return;
-            }
+            if (!form || !addressInput) return;
 
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                let val = input.value.trim();
 
-                if (!val) return;
+                let inputValue = addressInput.value.trim();
+
+                if (!inputValue) {
+                    errorDisplay.textContent = 'enter something first!';
+                    return;
+                }
+
+                errorDisplay.textContent = '';  // clear error
 
                 let targetUrl;
 
-                // Improved detection: direct URL if it has a TLD-like structure or protocol
-                const isLikelyUrl = 
-                    /^https?:\/\//i.test(val) ||
-                    /^[a-z0-9-]+\.[a-z]{2,6}(?::\d+)?(?:\/.*)?$/i.test(val) ||
-                    (val.includes('.') && !val.includes(' ') && val.split('.').length >= 2);
-
-                if (isLikelyUrl) {
-                    targetUrl = val.startsWith('http') ? val : 'https://' + val;
+                // Does it look like a direct URL / domain?
+                if (
+                    inputValue.match(/^(https?:\/\/)/i) ||
+                    inputValue.match(/^[a-z0-9-]+\.[a-z]{2,}(?::\d+)?(\/.*)?$/i) ||
+                    (inputValue.includes('.') && !inputValue.includes(' ') && inputValue.indexOf('.') > 0)
+                ) {
+                    // Direct site → prepend https:// if no protocol
+                    targetUrl = inputValue.startsWith('http') ? inputValue : 'https://' + inputValue;
                 } else {
                     // Fallback to search
-                    const engine = document.getElementById('sj-search-engine').value;
-                    targetUrl = engine.replace('%s', encodeURIComponent(val));
+                    const searchTemplate = document.getElementById('sj-search-engine').value;
+                    targetUrl = searchTemplate.replace('%s', encodeURIComponent(inputValue));
                 }
 
-                console.log("Attempting to load:", targetUrl);  // Check this in browser console (F12)
+                // Proxy prefix (change if your Scramjet uses something else like /uv/ or /proxy/)
+                const proxyPrefix = '/service/';
 
-                // Direct navigation — Scramjet service worker should intercept this
-                window.location.href = targetUrl;
+                // Final proxied path
+                const proxiedPath = proxyPrefix + encodeURIComponent(targetUrl);
+
+                // Debug log – check console (F12) to see what it's trying
+                console.log('Proxying to:', proxiedPath);
+
+                window.location.href = proxiedPath;
             });
         });
     </script>
