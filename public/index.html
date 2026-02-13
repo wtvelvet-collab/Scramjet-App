@@ -39,7 +39,7 @@
         .top-btn {
             position:fixed;
             top:20px;
-            right:20px;              /* same position for both buttons */
+            right:20px;
             background:#202124;
             color:#ffffff;
             border:none;
@@ -225,7 +225,7 @@
             if (clickedTab) clickedTab.classList.add('active');
         }
 
-        // Start on home page
+        // Start on home page → show settings
         showSettingsHideHome();
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -247,7 +247,6 @@
                 return originalFetch.apply(this, args);
             };
 
-            // Reset when returning to homepage
             window.addEventListener('popstate', () => {
                 if (window.location.pathname === '/' || window.location.pathname === '') {
                     showSettingsHideHome();
@@ -270,8 +269,10 @@
         function ab_cloakReal() {
             if (typeof document === "undefined") return;
 
+            const currentUrl = window.location.href;
+
             const iframe = document.createElement("iframe");
-            iframe.src = window.location.href;
+            iframe.src = currentUrl;
             iframe.style.width = "100%";
             iframe.style.height = "100%";
             iframe.style.border = "none";
@@ -286,25 +287,50 @@
             newWindow.document.body.style.margin = "0";
             newWindow.document.body.style.padding = "0";
 
-            // Inject home button in the same top-right spot
+            // Inject working home button using window.opener
             newWindow.document.body.insertAdjacentHTML('beforeend', `
-                <button id="injected-home" style="
-                    position:fixed; top:20px; right:20px;
-                    background:#202124; color:#ffffff; border:none;
-                    border-radius:9999px; padding:0 24px; height:52px;
-                    line-height:52px; font-family:'Oxanium',sans-serif;
-                    font-size:1rem; font-weight:300; cursor:pointer;
-                    z-index:100; outline:none; display:inline-flex;
-                    align-items:center; justify-content:center; min-width:120px;
-                    box-shadow:0 1px 6px rgba(0,0,0,0.3);
+                <button id="home-btn-cloaked" style="
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #202124;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 9999px;
+                    padding: 0 24px;
+                    height: 52px;
+                    line-height: 52px;
+                    font-family: 'Oxanium', sans-serif;
+                    font-size: 1rem;
+                    font-weight: 300;
+                    cursor: pointer;
+                    z-index: 9999;
+                    outline: none;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-width: 120px;
+                    box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+                    transition: all 0.18s ease;
                 ">home</button>
+
                 <script>
-                    const btn = document.getElementById('injected-home');
-                    btn.onclick = () => { window.location.href = '/'; };
+                    const btn = document.getElementById('home-btn-cloaked');
+                    
+                    btn.onclick = function() {
+                        if (window.opener && !window.opener.closed) {
+                            window.opener.location.href = '/';
+                            // window.close();   // uncomment if you want the cloak tab to close automatically
+                        } else {
+                            window.location.href = '/';  // fallback
+                        }
+                    };
+
                     btn.onmouseover = function() {
                         this.style.boxShadow = '0 1px 10px rgba(255,255,255,0.12)';
                         this.style.transform = 'translateY(-1px)';
                     };
+                    
                     btn.onmouseout = function() {
                         this.style.boxShadow = '0 1px 6px rgba(0,0,0,0.3)';
                         this.style.transform = '';
