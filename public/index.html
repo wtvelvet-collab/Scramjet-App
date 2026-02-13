@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
     <title>⠀</title>
 
-    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+    <!-- Blank/invisible favicon -->
+    <link rel="icon" href="data:,">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,7 +39,6 @@
             overflow: hidden;
         }
 
-        /* --- Unified Pill Style --- */
         .pill-element {
             background: #202124;
             color: #ffffff;
@@ -69,24 +69,6 @@
 
         #home-btn { display: none; }
 
-        /* --- Page Content --- */
-        .center-wrapper {
-            text-align: center;
-            width: 100%;
-            max-width: 700px;
-            padding: 0 20px;
-            z-index: 10;
-        }
-
-        h1 {
-            font-size: 5.5rem;
-            margin-bottom: 1.8rem;
-            font-weight: 300;
-            letter-spacing: -3px;
-            cursor: pointer;
-            user-select: none;
-        }
-
         #sj-form { width: 100%; }
 
         #sj-address {
@@ -95,9 +77,21 @@
             padding: 0 30px;
             font-size: 1.2rem;
             text-align: center;
+            background: #0f0f0f;
+            color: #ffffff;
+            border: 1px solid #222;
         }
 
-        /* --- Settings Overlay --- */
+        #sj-address::placeholder {
+            color: #aaa;
+            opacity: 1;
+        }
+
+        #sj-address:focus {
+            background: #1a1a1a;
+            border-color: #444;
+        }
+
         #settings-overlay {
             position: fixed;
             inset: 0;
@@ -166,7 +160,6 @@
         }
     </style>
 </head>
-
 <body>
     <button id="open-settings-btn" class="pill-element top-btn" onclick="openSettings()">settings</button>
     <button id="home-btn" class="pill-element top-btn" onclick="goHome()">home</button>
@@ -210,26 +203,68 @@
     </div>
 
     <script>
-        const sjForm = document.getElementById('sj-form');
-        const settingsBtn = document.getElementById('open-settings-btn');
-        const homeBtn = document.getElementById('home-btn');
-        const overlay = document.getElementById('settings-overlay');
-        const mainUI = document.getElementById('main-ui');
+        // ────────────────────────────────────────────────
+        //  Core elements
+        // ────────────────────────────────────────────────
+        const sjForm        = document.getElementById('sj-form');
+        const settingsBtn   = document.getElementById('open-settings-btn');
+        const homeBtn       = document.getElementById('home-btn');
+        const overlay       = document.getElementById('settings-overlay');
+        const mainUI        = document.getElementById('main-ui');
 
+        // Detect if we are inside the cloaked about:blank → iframe situation
+        const isCloaked = 
+            window.location.href === '' ||
+            window.location.href === 'about:blank' ||
+            window.location.href.startsWith('about:') ||
+            (window.frameElement && window.frameElement.tagName === 'IFRAME');
+
+        // Apply correct UI state right away
+        if (isCloaked) {
+            if (mainUI)        mainUI.style.display = 'none';
+            if (settingsBtn)   settingsBtn.style.display = 'none';
+            if (homeBtn)       homeBtn.style.display = 'flex';
+        } else {
+            if (homeBtn)       homeBtn.style.display = 'none';
+        }
+
+        // ────────────────────────────────────────────────
+        //  Home button – works in both normal & cloaked view
+        // ────────────────────────────────────────────────
         function goHome() {
+            if (isCloaked) {
+                // In cloaked tab → reload the top-level window
+                window.top.location.reload();
+                return;
+            }
+
+            // Normal view
+            if (mainUI)        mainUI.style.display = 'block';
+            if (settingsBtn)   settingsBtn.style.display = 'flex';
+            if (homeBtn)       homeBtn.style.display = 'none';
+
+            const addressInput = document.getElementById('sj-address');
+            if (addressInput)  addressInput.value = '';
+
             window.location.reload();
         }
 
+        // ────────────────────────────────────────────────
+        //  Search form submit → hide main UI, show home
+        // ────────────────────────────────────────────────
         if (sjForm) {
-            sjForm.addEventListener('submit', () => {
-                // Hide EVERYTHING except the Home button and the actual results
-                mainUI.style.display = 'none';
-                settingsBtn.style.display = 'none';
-                homeBtn.style.display = 'flex'; 
+            sjForm.addEventListener('submit', (e) => {
+                // Uncomment next line if your proxy in search.js needs it
+                // e.preventDefault();
+
+                if (mainUI)      mainUI.style.display = 'none';
+                if (settingsBtn) settingsBtn.style.display = 'none';
+                if (homeBtn)     homeBtn.style.display = 'flex';
             });
         }
 
         function openSettings() { 
+            if (isCloaked) return; // optional: disable settings while cloaked
             overlay.style.display = 'flex';
             setTimeout(() => overlay.classList.add('active'), 10);
         }
