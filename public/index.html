@@ -140,13 +140,16 @@
         <pre id="sj-error-code"></pre>
     </div>
 
-    <!-- Added URL vs Search logic -->
+    <!-- Fixed navigation: no prefix, direct location change for Scramjet SW interception -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('sj-form');
             const input = document.getElementById('sj-address');
 
-            if (!form || !input) return;
+            if (!form || !input) {
+                console.error("Form or input element missing");
+                return;
+            }
 
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -154,28 +157,26 @@
 
                 if (!val) return;
 
-                let url;
+                let targetUrl;
 
-                // Very simple URL detection
-                if (
-                    val.match(/^(https?:\/\/)/i) ||
-                    val.match(/^[a-z0-9-]+\.[a-z]{2,}(\/.*)?$/i) ||
-                    val.includes('.') && !val.includes(' ') && val.indexOf('.') > 0
-                ) {
-                    // Looks like a URL → add https:// if missing
-                    url = val.startsWith('http') ? val : 'https://' + val;
+                // Improved detection: direct URL if it has a TLD-like structure or protocol
+                const isLikelyUrl = 
+                    /^https?:\/\//i.test(val) ||
+                    /^[a-z0-9-]+\.[a-z]{2,6}(?::\d+)?(?:\/.*)?$/i.test(val) ||
+                    (val.includes('.') && !val.includes(' ') && val.split('.').length >= 2);
+
+                if (isLikelyUrl) {
+                    targetUrl = val.startsWith('http') ? val : 'https://' + val;
                 } else {
-                    // Treat as search
+                    // Fallback to search
                     const engine = document.getElementById('sj-search-engine').value;
-                    url = engine.replace('%s', encodeURIComponent(val));
+                    targetUrl = engine.replace('%s', encodeURIComponent(val));
                 }
 
-                // Most common Scramjet proxy prefix (change if yours is different)
-                // Examples: '/service/', '/uv/service/', '/proxy/', etc.
-                const proxyPrefix = '/service/';
+                console.log("Attempting to load:", targetUrl);  // Check this in browser console (F12)
 
-                // Navigate through the proxy
-                window.location.href = proxyPrefix + encodeURIComponent(url);
+                // Direct navigation — Scramjet service worker should intercept this
+                window.location.href = targetUrl;
             });
         });
     </script>
