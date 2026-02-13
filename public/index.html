@@ -38,7 +38,7 @@
             overflow: hidden;
         }
 
-        /* --- Unified Pill Style (No Outlines/Borders) --- */
+        /* --- Unified Pill Style --- */
         .pill-element {
             background: #202124;
             color: #ffffff;
@@ -65,14 +65,11 @@
         .top-btn:hover, #sj-address:hover {
             background: #2d2e31;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
-        #home-btn { 
-            display: none; 
-        }
+        #home-btn { display: none; }
 
-        /* --- Search Layout --- */
+        /* --- Page Content --- */
         .center-wrapper {
             text-align: center;
             width: 100%;
@@ -88,13 +85,9 @@
             letter-spacing: -3px;
             cursor: pointer;
             user-select: none;
-            transition: opacity 0.2s;
         }
-        h1:hover { opacity: 0.8; }
 
-        #sj-form {
-            width: 100%;
-        }
+        #sj-form { width: 100%; }
 
         #sj-address {
             width: 100%;
@@ -104,7 +97,7 @@
             text-align: center;
         }
 
-        /* --- Settings Overlay & Animations --- */
+        /* --- Settings Overlay --- */
         #settings-overlay {
             position: fixed;
             inset: 0;
@@ -118,10 +111,7 @@
             transition: opacity 0.3s ease;
         }
 
-        #settings-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
+        #settings-overlay.active { display: flex; opacity: 1; }
 
         #settings-panel {
             background: #0f0f0f;
@@ -136,9 +126,7 @@
             overflow: hidden;
         }
 
-        #settings-overlay.active #settings-panel {
-            transform: scale(1);
-        }
+        #settings-overlay.active #settings-panel { transform: scale(1); }
 
         #close-settings {
             position: absolute;
@@ -152,7 +140,7 @@
 
         .sidebar { width: 180px; background: #111; padding: 30px 0; }
         .sidebar-header { padding: 0 20px; margin-bottom: 20px; font-weight: 600; font-size: 1.2rem; }
-        .sidebar-item { padding: 12px 20px; color: #777; cursor: pointer; transition: 0.2s; }
+        .sidebar-item { padding: 12px 20px; color: #777; cursor: pointer; }
         .sidebar-item.active { color: #fff; background: #1a1a1a; }
 
         .content-area { flex: 1; padding: 40px; color: #ccc; overflow-y: auto; }
@@ -183,7 +171,7 @@
     <button id="open-settings-btn" class="pill-element top-btn" onclick="openSettings()">settings</button>
     <button id="home-btn" class="pill-element top-btn" onclick="goHome()">home</button>
 
-    <div class="center-wrapper">
+    <div id="main-ui" class="center-wrapper">
         <h1 onclick="goHome()">akkosploits</h1>
         <form id="sj-form">
             <input id="sj-search-engine" value="https://www.google.com/search?q=%s" type="hidden" />
@@ -226,13 +214,16 @@
         const settingsBtn = document.getElementById('open-settings-btn');
         const homeBtn = document.getElementById('home-btn');
         const overlay = document.getElementById('settings-overlay');
+        const mainUI = document.getElementById('main-ui');
 
         function goHome() {
-            window.location.href = window.location.origin + window.location.pathname;
+            window.location.reload();
         }
 
         if (sjForm) {
             sjForm.addEventListener('submit', () => {
+                // Hide EVERYTHING except the Home button and the actual results
+                mainUI.style.display = 'none';
                 settingsBtn.style.display = 'none';
                 homeBtn.style.display = 'flex'; 
             });
