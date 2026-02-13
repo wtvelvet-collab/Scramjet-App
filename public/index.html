@@ -53,7 +53,7 @@
             cursor:pointer;
             transition:all 0.18s ease;
             z-index:100;
-            outline:none;
+            outline:none !important;
             display:inline-flex;
             align-items:center;
             justify-content:center;
@@ -75,7 +75,7 @@
         #open-settings-btn:focus-visible,
         #open-settings-btn:active {
             outline:none !important;
-            box-shadow:0 0 0 3px rgba(255,105,180,0.25);
+            box-shadow:none !important;
         }
 
         #open-settings-btn:hover {
@@ -83,7 +83,6 @@
             transform:translateY(-1px);
         }
 
-        /* Rest of your styles remain unchanged */
         #settings-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.94); backdrop-filter:blur(14px); display:none; align-items:center; justify-content:center; z-index:9999; }
         #settings-panel { background:#0f0f0f; border-radius:16px; width:92%; max-width:660px; height:72vh; max-height:820px; overflow:hidden; display:flex; box-shadow:0 24px 70px rgba(0,0,0,0.8); position:relative; }
         #close-settings { position:absolute; top:14px; right:18px; font-size:2.6rem; cursor:pointer; color:#aaa; line-height:1; z-index:101; transition:color 0.12s, transform 0.12s; }
@@ -102,8 +101,10 @@
         .slider:before { position:absolute; content:""; height:18px; width:18px; left:4px; bottom:4px; background-color:white; transition:.4s; border-radius:50%; }
         input:checked + .slider { background-color:#ff69b4; }
         input:checked + .slider:before { transform:translateX(24px); }
+
         .center-wrapper { text-align:center; width:100%; max-width:700px; padding:0 20px; margin-top:-14vh; }
         h1 { font-size:5.5rem; margin-bottom:1.8rem; font-weight:300; letter-spacing:-3px; color:#ffffff; }
+
         #sj-address {
             width:100%;
             max-width:680px;
@@ -114,8 +115,8 @@
             font-weight:300;
             background:#202124;
             color:#ffffff;
-            border:none;
-            border-radius:9999px;
+            border:none !important;
+            border-radius:9999px !important;
             outline:none !important;
             box-shadow:0 1px 6px rgba(0,0,0,0.4);
             transition:all 0.18s ease;
@@ -124,11 +125,16 @@
             -webkit-appearance:none;
             appearance:none;
         }
-        #sj-address:focus, #sj-address:focus-visible, #sj-address:active {
+
+        #sj-address:focus,
+        #sj-address:focus-visible,
+        #sj-address:active {
             outline:none !important;
             border:none !important;
-            box-shadow:0 0 0 3px rgba(255,105,180,0.25);
+            border-radius:9999px !important;
+            box-shadow:none !important;
         }
+
         .error-area { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); color:#ea4335; text-align:center; width:90%; }
 
         @media (max-width:600px) {
@@ -219,11 +225,9 @@
             clickedTab.classList.add('active');
         }
 
-        // Hide button when proxy navigation happens
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('sj-form');
             form.addEventListener('submit', (e) => {
-                // Optimistically hide on submit
                 hideSettingsButton();
                 closeSettings();
             });
@@ -240,7 +244,6 @@
                 return originalFetch.apply(this, args);
             };
 
-            // Optional: show button again if user navigates back to home
             window.addEventListener('popstate', () => {
                 if (window.location.pathname === '/' || window.location.pathname === '') {
                     showSettingsButton();
