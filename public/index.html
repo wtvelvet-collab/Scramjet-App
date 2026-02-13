@@ -225,7 +225,6 @@
             if (clickedTab) clickedTab.classList.add('active');
         }
 
-        // Start on home page → show settings
         showSettingsHideHome();
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -266,13 +265,12 @@
             localStorage.setItem('autoCloak', checkbox.checked);
         }
 
+        // FIXED: Home button now reloads the iframe to your homepage (works after searching)
         function ab_cloakReal() {
             if (typeof document === "undefined") return;
 
-            const currentUrl = window.location.href;
-
             const iframe = document.createElement("iframe");
-            iframe.src = currentUrl;
+            iframe.src = window.location.href;
             iframe.style.width = "100%";
             iframe.style.height = "100%";
             iframe.style.border = "none";
@@ -287,9 +285,8 @@
             newWindow.document.body.style.margin = "0";
             newWindow.document.body.style.padding = "0";
 
-            // Inject working home button using window.opener
             newWindow.document.body.insertAdjacentHTML('beforeend', `
-                <button id="home-btn-cloaked" style="
+                <button id="home-cloaked" style="
                     position: fixed;
                     top: 20px;
                     right: 20px;
@@ -315,14 +312,14 @@
                 ">home</button>
 
                 <script>
-                    const btn = document.getElementById('home-btn-cloaked');
-                    
+                    const btn = document.getElementById('home-cloaked');
+                    const iframe = document.querySelector('iframe');
+
                     btn.onclick = function() {
-                        if (window.opener && !window.opener.closed) {
-                            window.opener.location.href = '/';
-                            // window.close();   // uncomment if you want the cloak tab to close automatically
+                        if (iframe) {
+                            iframe.src = '/';   // ← this reloads the iframe to your homepage (via proxy)
                         } else {
-                            window.location.href = '/';  // fallback
+                            window.location.href = '/';
                         }
                     };
 
@@ -330,7 +327,6 @@
                         this.style.boxShadow = '0 1px 10px rgba(255,255,255,0.12)';
                         this.style.transform = 'translateY(-1px)';
                     };
-                    
                     btn.onmouseout = function() {
                         this.style.boxShadow = '0 1px 6px rgba(0,0,0,0.3)';
                         this.style.transform = '';
