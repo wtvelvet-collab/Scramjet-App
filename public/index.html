@@ -60,22 +60,13 @@
             box-shadow:0 1px 6px rgba(0,0,0,0.3);
             opacity:0;
             visibility:hidden;
-            transform:scale(0.92);
             pointer-events:none;
         }
 
         .top-btn.visible {
             opacity:1;
             visibility:visible;
-            transform:scale(1);
             pointer-events:auto;
-        }
-
-        .top-btn:focus,
-        .top-btn:focus-visible,
-        .top-btn:active {
-            outline:none !important;
-            box-shadow:none !important;
         }
 
         .top-btn:hover {
@@ -84,7 +75,7 @@
         }
 
         #open-settings-btn { right:20px; }
-        #home-btn { right:180px; }   /* positioned left of settings button */
+        #home-btn        { right:180px; }
 
         #settings-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.94); backdrop-filter:blur(14px); display:none; align-items:center; justify-content:center; z-index:9999; }
         #settings-panel { background:#0f0f0f; border-radius:16px; width:92%; max-width:660px; height:72vh; max-height:820px; overflow:hidden; display:flex; box-shadow:0 24px 70px rgba(0,0,0,0.8); position:relative; }
@@ -150,7 +141,7 @@
     </style>
 </head>
 <body>
-    <button id="open-settings-btn" class="top-btn" onclick="openSettings()">settings</button>
+    <button id="open-settings-btn" class="top-btn visible" onclick="openSettings()">settings</button>
     <button id="home-btn" class="top-btn" onclick="goHome()">home</button>
 
     <div class="center-wrapper">
@@ -201,16 +192,16 @@
 
     <script>
         const settingsBtn = document.getElementById('open-settings-btn');
-        const homeBtn = document.getElementById('home-btn');
+        const homeBtn     = document.getElementById('home-btn');
 
-        function showNavButtons() {
-            if (settingsBtn) settingsBtn.classList.remove('visible');
-            if (homeBtn) homeBtn.classList.add('visible');
-        }
-
-        function hideNavButtons() {
-            if (homeBtn) homeBtn.classList.remove('visible');
-            if (settingsBtn) settingsBtn.classList.add('visible');
+        function updateButtonStates(isHome) {
+            if (isHome) {
+                settingsBtn.classList.add('visible');
+                homeBtn.classList.remove('visible');
+            } else {
+                settingsBtn.classList.remove('visible');
+                homeBtn.classList.add('visible');
+            }
         }
 
         function goHome() {
@@ -235,33 +226,38 @@
             document.getElementById('cloaking-content').style.display = tab === 'cloaking' ? 'block' : 'none';
             document.getElementById('about-content').style.display = tab === 'about' ? 'block' : 'none';
             document.querySelectorAll('.sidebar-item').forEach(item => item.classList.remove('active'));
-            clickedTab.classList.add('active');
+            if (clickedTab) clickedTab.classList.add('active');
         }
+
+        // Initial state: assume home
+        updateButtonStates(true);
 
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('sj-form');
-            form.addEventListener('submit', () => {
-                showNavButtons();
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); // prevent default if needed
+                updateButtonStates(false);
                 closeSettings();
+                // actual proxy load happens in search.js probably
             });
 
+            // Detect proxy requests
             const originalFetch = window.fetch;
             window.fetch = function(...args) {
                 if (typeof args[0] === 'string' && (
                     args[0].includes('/service/') ||
                     (args[0].startsWith('http') && !args[0].includes(window.location.host))
                 )) {
-                    showNavButtons();
+                    updateButtonStates(false);
                     closeSettings();
                 }
                 return originalFetch.apply(this, args);
             };
 
-            // Show home button again when back on homepage
+            // When browser back/forward changes URL
             window.addEventListener('popstate', () => {
-                if (window.location.pathname === '/' || window.location.pathname === '') {
-                    hideNavButtons();
-                }
+                const isHome = (window.location.pathname === '/' || window.location.pathname === '');
+                updateButtonStates(isHome);
             });
         });
 
@@ -278,62 +274,50 @@
         }
 
         function ab_cloakReal() {
-            if (typeof document !== "undefined") {
-                var iframe = document.createElement("iframe");
-                iframe.src = window.location.href;
-                iframe.style.width = "100%";
-                iframe.style.height = "100%";
-                iframe.style.border = "none";
-                iframe.style.overflow = "hidden";
+            if (typeof document === "undefined") return;
 
-                var newWindow = window.open("about:blank", "_blank");
-                if (newWindow) {
-                    newWindow.document.body.appendChild(iframe);
-                    newWindow.document.body.style.width = "100%";
-                    newWindow.document.body.style.height = "100%";
-                    newWindow.document.body.style.margin = "0";
-                    newWindow.document.body.style.padding = "0";
+            const iframe = document.createElement("iframe");
+            iframe.src = window.location.href;
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.style.overflow = "hidden";
 
-                    // Inject home button into about:blank
-                    const homeScript = `
-                        const homeBtn = document.createElement('button');
-                        homeBtn.textContent = 'home';
-                        homeBtn.style.position = 'fixed';
-                        homeBtn.style.top = '20px';
-                        homeBtn.style.right = '180px';
-                        homeBtn.style.background = '#202124';
-                        homeBtn.style.color = '#ffffff';
-                        homeBtn.style.border = 'none';
-                        homeBtn.style.borderRadius = '9999px';
-                        homeBtn.style.padding = '0 24px';
-                        homeBtn.style.height = '52px';
-                        homeBtn.style.lineHeight = '52px';
-                        homeBtn.style.fontFamily = '"Oxanium", sans-serif';
-                        homeBtn.style.fontSize = '1rem';
-                        homeBtn.style.fontWeight = '300';
-                        homeBtn.style.cursor = 'pointer';
-                        homeBtn.style.zIndex = '100';
-                        homeBtn.style.outline = 'none';
-                        homeBtn.style.display = 'inline-flex';
-                        homeBtn.style.alignItems = 'center';
-                        homeBtn.style.justifyContent = 'center';
-                        homeBtn.style.minWidth = '120px';
-                        homeBtn.style.boxShadow = '0 1px 6px rgba(0,0,0,0.3)';
-                        homeBtn.style.transition = 'all 0.18s ease';
-                        homeBtn.onclick = () => { window.location.href = '/'; };
-                        homeBtn.onmouseover = () => {
-                            homeBtn.style.boxShadow = '0 1px 10px rgba(255,255,255,0.12)';
-                            homeBtn.style.transform = 'translateY(-1px)';
-                        };
-                        homeBtn.onmouseout = () => {
-                            homeBtn.style.boxShadow = '0 1px 6px rgba(0,0,0,0.3)';
-                            homeBtn.style.transform = 'scale(1)';
-                        };
-                        document.body.appendChild(homeBtn);
-                    `;
-                    newWindow.document.body.insertAdjacentHTML('beforeend', `<script>${homeScript}</script>`);
-                }
-            }
+            const newWindow = window.open("about:blank", "_blank");
+            if (!newWindow) return;
+
+            newWindow.document.body.appendChild(iframe);
+            newWindow.document.body.style.width = "100%";
+            newWindow.document.body.style.height = "100%";
+            newWindow.document.body.style.margin = "0";
+            newWindow.document.body.style.padding = "0";
+
+            // Inject home button in about:blank
+            newWindow.document.body.insertAdjacentHTML('beforeend', `
+                <button id="injected-home" style="
+                    position:fixed; top:20px; right:180px;
+                    background:#202124; color:#ffffff; border:none;
+                    border-radius:9999px; padding:0 24px; height:52px;
+                    line-height:52px; font-family:'Oxanium',sans-serif;
+                    font-size:1rem; font-weight:300; cursor:pointer;
+                    z-index:100; outline:none; display:inline-flex;
+                    align-items:center; justify-content:center; min-width:120px;
+                    box-shadow:0 1px 6px rgba(0,0,0,0.3);
+                ">home</button>
+                <script>
+                    document.getElementById('injected-home').onclick = () => {
+                        window.location.href = '/';
+                    };
+                    document.getElementById('injected-home').onmouseover = function() {
+                        this.style.boxShadow = '0 1px 10px rgba(255,255,255,0.12)';
+                        this.style.transform = 'translateY(-1px)';
+                    };
+                    document.getElementById('injected-home').onmouseout = function() {
+                        this.style.boxShadow = '0 1px 6px rgba(0,0,0,0.3)';
+                        this.style.transform = '';
+                    };
+                <\/script>
+            `);
         }
     </script>
 </body>
