@@ -6,7 +6,6 @@
     <title>akkosploits</title>
 
     <link rel="shortcut icon" href="favicon.webp" />
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500&display=swap" rel="stylesheet">
@@ -44,7 +43,7 @@
             overflow: hidden;
         }
 
-        /* --- Main Page Settings Button (Squircle) --- */
+        /* --- Main Page Settings Button --- */
         #open-settings-btn {
             position: fixed;
             top: 20px;
@@ -105,7 +104,6 @@
             transition: color 0.12s, transform 0.12s;
         }
 
-        /* --- Sidebar & Fixed Highlight --- */
         .sidebar { 
             width: 170px; 
             background: #111111; 
@@ -129,7 +127,7 @@
             color: #888888; 
             cursor: pointer; 
             position: relative; 
-            z-index: 2; /* Sits above the highlight box */
+            z-index: 2;
             transition: color 0.12s; 
             height: 48px; 
         }
@@ -144,7 +142,7 @@
             height: 48px;
             background: #1a1a1a; 
             border-radius: 10px; 
-            z-index: 1; /* Sits behind the text */
+            z-index: 1;
             pointer-events: none;
             transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
@@ -159,7 +157,6 @@
             font-family: 'Oxanium', sans-serif;
         }
 
-        /* --- Pink Toggle --- */
         .setting-row { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding: 10px 0; border-top: 1px solid #222; }
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -172,11 +169,16 @@
         .center-wrapper { text-align: center; width: 100%; max-width: 700px; padding: 0 20px; margin-top: -14vh; }
         h1 { font-size: 5.5rem; margin-bottom: 1.8rem; font-weight: 300; letter-spacing: -3px; color: #ffffff; }
         
+        /* --- FIXED CIRCLE SEARCH BAR --- */
         #sj-address {
             width: 100%; max-width: 680px; height: 52px; margin: 0 auto; padding: 0 24px;
             font-size: 1.18rem; font-weight: 300; background: #202124; color: #ffffff;
-            border: 1px solid #5f6368; border-radius: 9999px; outline: none !important;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.4); transition: all 0.18s ease; text-align: center;
+            border: 1px solid #5f6368; 
+            border-radius: 9999px !important; /* Force pill/circle shape */
+            outline: none !important;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.4); 
+            transition: border-color 0.18s ease; 
+            text-align: center;
             font-family: 'Oxanium', sans-serif;
         }
         
@@ -240,9 +242,21 @@
     </div>
 
     <script>
+        // --- Added Logic to Hide Settings on Search ---
+        const sjForm = document.getElementById('sj-form');
+        const settingsBtn = document.getElementById('open-settings-btn');
+
+        if (sjForm) {
+            sjForm.addEventListener('submit', () => {
+                if (settingsBtn) {
+                    settingsBtn.style.display = 'none';
+                }
+            });
+        }
+
         function openSettings() { 
             document.getElementById('settings-overlay').style.display = 'flex'; 
-            showTab('cloaking'); // Ensure highlight is in correct spot when opened
+            showTab('cloaking'); 
         }
         function closeSettings() { document.getElementById('settings-overlay').style.display = 'none'; }
 
